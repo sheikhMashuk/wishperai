@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # WhisperAI Cloud Gateway & WebSocket Hub
+  server:
+    build:
+      context: ../server
+      dockerfile: Dockerfile
+    container_name: whisperai-server
+    restart: always
+    environment:
+      - PROJECT_NAME=WhisperAI Cloud Services
+      - DATABASE_URL=postgresql+asyncpg://whisperai:whisperai_secret@postgres:5432/whisperaidb
+      - REDIS_URL=redis://redis:6379/0
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - whisperai-net
+
+  # PostgreSQL Database with Vector Search
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: whisperai-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=whisperai
+      - POSTGRES_PASSWORD=whisperai_secret
+      - POSTGRES_DB=whisperaidb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U whisperai -d whisperaidb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - whisperai-net
+
+  # Redis In-Memory Session Cache
+  redis:
+    image: redis:7-alpine
+    container_name: whisperai-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - whisperai-net
+
+networks:
+  whisperai-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+  redisdata:

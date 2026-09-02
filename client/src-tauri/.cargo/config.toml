@@ -1,0 +1,10 @@
+[build]
+jobs = 1
+
+[profile.release]
+codegen-units = 1
+incremental = false
+
+[profile.dev]
+codegen-units = 1
+incremental = false
