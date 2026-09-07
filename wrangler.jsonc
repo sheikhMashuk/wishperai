@@ -1,0 +1,10 @@
+{
+  // Static hosting for the WhisperAI landing page.
+  // No Worker script — Cloudflare just serves the files in ./landing
+  "name": "wishperai",
+  "compatibility_date": "2026-09-08",
+  "assets": {
+    "directory": "./landing",
+    "not_found_handling": "single-page-application"
+  }
+}
