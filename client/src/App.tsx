@@ -1,14 +1,5 @@
-import { StealthHUD } from './components/overlay/StealthHUD';
+import { Overlay } from './components/overlay/Overlay';
 
-export function App() {
-  return (
-    <main className="w-screen h-screen overflow-hidden bg-transparent relative flex flex-col font-sans">
-      <div className="w-full h-full p-2 animate-fadeIn">
-        <StealthHUD />
-      </div>
-    </main>
-  );
+export default function App() {
+  return <Overlay />;
 }
-
-export default App;
-

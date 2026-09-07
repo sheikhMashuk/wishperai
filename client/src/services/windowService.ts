@@ -1,45 +1,29 @@
 import { invoke } from '@tauri-apps/api/core';
 
-export class WindowService {
-  public static async toggleVisibility(): Promise<boolean> {
-    try {
-      return await invoke<boolean>('toggle_stealth_visibility');
-    } catch (err) {
-      console.warn('WindowService.toggleVisibility error:', err);
-      return true;
-    }
-  }
+const inTauri = () => typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
-  public static async hideWindow(): Promise<void> {
-    try {
-      await invoke('hide_stealth_window');
-    } catch (err) {
-      console.warn('WindowService.hideWindow error:', err);
-    }
-  }
-
-  public static async showWindow(): Promise<void> {
-    try {
-      await invoke('show_stealth_window');
-    } catch (err) {
-      console.warn('WindowService.showWindow error:', err);
-    }
-  }
-
-  public static async closeApp(): Promise<void> {
-    try {
-      await invoke('close_stealth_app');
-    } catch (err) {
-      console.warn('WindowService.closeApp error:', err);
+export const windowService = {
+  async setClickThrough(enable: boolean) {
+    if (!inTauri()) return;
+    await invoke('set_stealth_clickthrough', { enable }).catch((e) => console.warn('setClickThrough', e));
+  },
+  async hide() {
+    if (!inTauri()) return;
+    await invoke('hide_stealth_window').catch((e) => console.warn('hide', e));
+  },
+  async quit() {
+    if (!inTauri()) {
       window.close();
+      return;
     }
-  }
-
-  public static async setClickThrough(enable: boolean): Promise<void> {
-    try {
-      await invoke('set_stealth_clickthrough', { enable });
-    } catch (err) {
-      console.warn('WindowService.setClickThrough error:', err);
-    }
-  }
-}
+    await invoke('close_stealth_app').catch((e) => console.warn('quit', e));
+  },
+  async getApiKey(): Promise<string> {
+    if (!inTauri()) return '';
+    return invoke<string>('get_api_key').catch(() => '');
+  },
+  async setApiKey(key: string) {
+    if (!inTauri()) return;
+    await invoke('set_api_key', { key }).catch((e) => console.warn('setApiKey', e));
+  },
+};

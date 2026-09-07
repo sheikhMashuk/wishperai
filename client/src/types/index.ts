@@ -1,58 +1,62 @@
-export type IntentCategory = 
-  | 'BEHAVIORAL' 
-  | 'CODING_ALGORITHM' 
-  | 'SYSTEM_DESIGN' 
-  | 'TECHNICAL_KNOWLEDGE' 
+export type IntentCategory =
+  | 'BEHAVIORAL'
+  | 'CODING_ALGORITHM'
+  | 'SYSTEM_DESIGN'
+  | 'TECHNICAL_KNOWLEDGE'
   | 'GENERAL';
 
-export interface TranscriptSegment {
-  id: string;
-  speaker: 'interviewer' | 'candidate';
-  text: string;
-  timestamp: number;
-  isFinal: boolean;
-}
+export type ModelProvider = 'groq' | 'anthropic' | 'openai' | 'openrouter' | 'local';
 
-export interface CopilotSuggestion {
+export interface Answer {
   id: string;
   question: string;
   intent: IntentCategory;
-  summary: string;
-  bulletPoints: string[];
-  codeSnippet?: {
+  /** One-line spoken answer, streamed first. */
+  headline: string;
+  /** Supporting talking points, streamed as they parse. */
+  points: string[];
+  code?: {
     language: string;
-    code: string;
+    content: string;
     complexity?: string;
   };
-  starStory?: {
-    situation: string;
-    task: string;
-    action: string;
-    result: string;
-  };
-  retrievedContext?: string[];
-  timestamp: number;
+  createdAt: number;
   latencyMs?: number;
-  modelUsed?: string;
-}
-
-export interface AudioLevels {
-  micRms: number;
-  loopbackRms: number;
+  model?: string;
+  streaming?: boolean;
+  error?: boolean;
 }
 
 export interface AppSettings {
-  opacity: number;
-  clickThrough: boolean;
-  modelProvider: 'groq' | 'anthropic' | 'openai' | 'local' | 'openrouter';
-  groqModel: 'llama-3.3-70b-versatile' | 'llama-3.1-8b-instant';
-  openRouterModel?: string;
+  provider: ModelProvider;
+  /** API key for the active provider (swap when you change providers). */
   apiKey: string;
-  selectedMic: string;
-  autoScroll: boolean;
-  stealthModeEnabled: boolean;
+  /** Chosen model id — always picked from the provider's live model list, never hard-coded. */
+  model: string;
+  /** Base URL for a local OpenAI-compatible / Ollama server. */
   localModelUrl: string;
-  localModelName: string;
   resumeContext: string;
   speechLanguage: string;
+  opacity: number;
 }
+
+export const DEFAULT_SETTINGS: AppSettings = {
+  provider: 'groq',
+  apiKey: '',
+  model: '',
+  localModelUrl: 'http://localhost:11434',
+  resumeContext: '',
+  speechLanguage: 'en-US',
+  opacity: 1,
+};
+
+export const PROVIDER_META: Record<
+  ModelProvider,
+  { name: string; note: string; keyHint: string; keyUrl: string; needsKey: boolean }
+> = {
+  groq: { name: 'Groq', note: 'Fastest, free tier', keyHint: 'gsk_…', keyUrl: 'https://console.groq.com/keys', needsKey: true },
+  openrouter: { name: 'OpenRouter', note: 'Any model, free tiers', keyHint: 'sk-or-…', keyUrl: 'https://openrouter.ai/keys', needsKey: true },
+  anthropic: { name: 'Claude', note: 'Best reasoning', keyHint: 'sk-ant-…', keyUrl: 'https://console.anthropic.com/settings/keys', needsKey: true },
+  openai: { name: 'OpenAI', note: 'GPT models', keyHint: 'sk-…', keyUrl: 'https://platform.openai.com/api-keys', needsKey: true },
+  local: { name: 'Local (Ollama)', note: 'Offline, private', keyHint: '', keyUrl: '', needsKey: false },
+};

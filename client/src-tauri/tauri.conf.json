@@ -13,16 +13,20 @@
     "windows": [
       {
         "label": "main",
-        "title": "WhisperAI Stealth Overlay",
-        "width": 820,
-        "height": 460,
+        "title": "WhisperAI",
+        "width": 720,
+        "height": 500,
+        "minWidth": 420,
+        "minHeight": 120,
         "resizable": true,
+        "maximizable": false,
+        "minimizable": false,
         "decorations": false,
         "transparent": true,
         "alwaysOnTop": true,
         "skipTaskbar": true,
         "shadow": false,
-        "visible": false,
+        "visible": true,
         "center": true
       }
     ],

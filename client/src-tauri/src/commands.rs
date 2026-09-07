@@ -29,6 +29,8 @@ pub fn toggle_stealth_visibility(window: WebviewWindow) -> Result<bool, String> 
         Ok(false)
     } else {
         window.show().map_err(|e| e.to_string())?;
+        let _ = window.unminimize();
+        let _ = window.set_focus();
         stealth::configure_window_stealth(&window)?;
         Ok(true)
     }
@@ -42,6 +44,8 @@ pub fn hide_stealth_window(window: WebviewWindow) -> Result<(), String> {
 #[tauri::command]
 pub fn show_stealth_window(window: WebviewWindow) -> Result<(), String> {
     window.show().map_err(|e| e.to_string())?;
+    let _ = window.unminimize();
+    let _ = window.set_focus();
     stealth::configure_window_stealth(&window)?;
     Ok(())
 }
@@ -65,4 +69,27 @@ pub fn stop_audio_capture(state: State<AppState>) -> Result<(), String> {
 #[tauri::command]
 pub fn get_audio_levels(state: State<AppState>) -> (f32, f32) {
     state.audio_service.lock().get_audio_levels()
+}
+
+use keyring::Entry;
+
+#[tauri::command]
+pub fn get_api_key() -> Result<String, String> {
+    let entry = Entry::new("whisperai", "api_key").map_err(|e| e.to_string())?;
+    match entry.get_password() {
+        Ok(pw) => Ok(pw),
+        Err(keyring::Error::NoEntry) => Ok(String::new()),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+#[tauri::command]
+pub fn set_api_key(key: String) -> Result<(), String> {
+    let entry = Entry::new("whisperai", "api_key").map_err(|e| e.to_string())?;
+    if key.is_empty() {
+        let _ = entry.delete_credential();
+    } else {
+        entry.set_password(&key).map_err(|e| e.to_string())?;
+    }
+    Ok(())
 }

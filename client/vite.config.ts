@@ -22,6 +22,9 @@ export default defineConfig({
       ignored: ["**/src-tauri/**"],
     },
   },
+  optimizeDeps: {
+    exclude: ["src-tauri"],
+  },
   build: {
     target: "es2022",
     minify: !process.env.TAURI_ENV_DEBUG ? "esbuild" : false,
