@@ -63,9 +63,25 @@
       }
     });
 
-    const onScroll = () => head.toggleAttribute('data-scrolled', window.scrollY > 8);
+    const prog = D.createElement('div');
+    prog.className = 'scroll-prog';
+    D.body.appendChild(prog);
+
+    let ticking = false;
+    const onScroll = () => {
+      head.toggleAttribute('data-scrolled', window.scrollY > 8);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const max = D.documentElement.scrollHeight - window.innerHeight;
+          prog.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
   }
 
   /* ---------------- footer ---------------- */
