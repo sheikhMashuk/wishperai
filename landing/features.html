@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Features — WhisperAI</title>
+  <meta name="description" content="Everything WhisperAI does: live question detection, streaming answers, intent-aware output, live model discovery across five providers, click-through mode, keychain storage, global hotkeys." />
+  <meta property="og:title" content="WhisperAI — features" />
+  <meta property="og:description" content="Live question detection, streaming answers, any model live, click-through, keychain, hotkeys." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/site.css?v=4" />
+  <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/assets/main.js?v=4" defer></script>
+</head>
+<body data-page="features">
+  <div id="site-head"></div>
+
+  <main>
+    <header class="section--tight wrap" style="padding-top: clamp(7rem, 14vw, 9rem)">
+      <div class="prose stack reveal">
+        <p class="eyebrow">Features</p>
+        <h1 class="display">Every part of it, and why it's there.</h1>
+        <p class="lede">Nothing here is a checkbox. Each of these earned its place by mattering in the two seconds after a question lands.</p>
+      </div>
+    </header>
+
+    <!-- audio -->
+    <section class="wrap" id="audio">
+      <div class="feature-row reveal">
+        <div>
+          <p class="eyebrow">Hearing</p>
+          <h3>Automatic question detection</h3>
+          <p>
+            Speech recognition runs continuously on the call. WhisperAI watches the transcript for a
+            question — a rising phrase, a question mark, a starter like <em>"how would you"</em> — and a
+            short silence after it. When both happen, it drafts an answer with no input from you.
+          </p>
+          <p>
+            It also taps your audio output directly (WASAPI loopback on Windows), so it hears the
+            interviewer even when they're the one talking and your mic is muted. No virtual audio device.
+          </p>
+        </div>
+        <div class="feature-row__media">
+          <pre class="code">transcript  ▸ "…and how would you keep that consistent
+              across regions?"
+detect      ▸ question · trailing silence 410ms
+trigger     ▸ draft answer</pre>
+          <p style="font-size:.85rem;color:var(--text-3)">Languages: English (US / UK / India), Spanish, French, German, Hindi.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- answers -->
+    <section class="wrap" id="answers">
+      <div class="feature-row reveal">
+        <div>
+          <p class="eyebrow">Answering</p>
+          <h3>Streaming, in the order you'll use it</h3>
+          <p>
+            The one-line headline arrives first — first person, short, meant to be spoken. Then the
+            three to five talking points. Then, if it's a coding question, a clean implementation with
+            its time and space complexity.
+          </p>
+          <p>
+            You start talking on the headline and read the rest as it fills in. Copy the whole thing, or
+            just the code, with one click.
+          </p>
+        </div>
+        <div class="feature-row__media">
+          <div class="mock__card" style="background:transparent">
+            <div class="mock__tags"><b>System design</b><span>209 ms</span><span>Groq</span></div>
+            <p class="mock__a" style="font-size:.84rem">"Async gateways behind a load balancer, connections sharded by a consistent-hash ring, fan-out over Redis pub/sub."</p>
+            <ul class="mock__pts">
+              <li>Zero-copy framing, recycled buffer pool.</li>
+              <li>One client, one worker — no cross-node chatter.</li>
+              <li>Bounded queues drop stale frames, never block.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- intent -->
+    <section class="wrap" id="intent">
+      <div class="feature-row reveal">
+        <div>
+          <p class="eyebrow">Shaping</p>
+          <h3>It knows what kind of question you were asked</h3>
+          <p>
+            Behavioral questions come back as a <strong>STAR</strong> story — situation, task, action,
+            result — because that's what the interviewer is scoring. Coding questions come back as a
+            solution plus complexity. System design gets structure and trade-offs. Everything else gets
+            a direct, technical answer.
+          </p>
+        </div>
+        <div class="feature-row__media">
+          <dl class="spec" style="border:0">
+            <div><dt>behavioral</dt><dd>STAR story, quantified result</dd></div>
+            <div><dt>coding</dt><dd>solution + Time / Space</dd></div>
+            <div><dt>system design</dt><dd>components, trade-offs</dd></div>
+            <div style="border:0"><dt>technical</dt><dd>direct answer, exact terms</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- prompts -->
+    <section class="wrap" id="prompts">
+      <div class="feature-row reveal">
+        <div>
+          <p class="eyebrow">Nudging</p>
+          <h3>Four one-tap prompts</h3>
+          <p>
+            <strong>Answer this</strong> takes the last question heard. <strong>What do I say?</strong>
+            gives you the single sentence, nothing else. <strong>Follow-up</strong> hands you two sharp
+            questions to ask them. <strong>Recap</strong> compresses the last few minutes into points.
+          </p>
+          <p>Each one carries the conversation so far as context — you're not starting from a blank prompt.</p>
+        </div>
+        <div class="feature-row__media">
+          <div class="mock__chips" style="border:0;padding:0;flex-wrap:wrap">
+            <span>Answer this</span><span>What do I say?</span><span>Follow-up</span><span>Recap</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- click-through -->
+    <section class="wrap" id="clickthrough">
+      <div class="feature-row reveal">
+        <div>
+          <p class="eyebrow">Staying out of the way</p>
+          <h3>Click-through mode</h3>
+          <p>
+            Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> and the overlay stops catching the mouse.
+            Clicks, drags and scrolls pass straight through to whatever's behind it — your editor, the
+            coding portal, the terminal — while the answer stays on top and readable.
+          </p>
+          <p>A thin amber border reminds you it's on. Toggle it back the same way.</p>
+        </div>
+        <div class="feature-row__media">
+          <div style="display:grid;gap:.5rem;font-family:var(--mono);font-size:.8rem;color:var(--ok)">
+            <span>✓ type in VS Code, overlay untouched</span>
+            <span>✓ run the test suite underneath it</span>
+            <span>✓ scroll the problem, read the answer</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- models -->
+    <section class="section wrap" id="models" style="border-top:1px solid var(--line)">
+      <div class="prose stack reveal" style="margin-bottom:2.5rem">
+        <p class="eyebrow">The model layer</p>
+        <h2 class="display">Nothing about models is written into the app.</h2>
+        <p style="color:var(--text-2)">
+          Every provider exposes a <code>/models</code> endpoint. WhisperAI calls it when you open
+          Settings, shows you the current list, and picks a sensible fast default. If the model you had
+          saved has been retired, the next request re-fetches the list, swaps in a working one, retries,
+          and remembers the new choice. You never see a dead-model error.
+        </p>
+      </div>
+      <dl class="spec reveal">
+        <div><dt>Groq</dt><dd><b>Fastest.</b> LPU inference, free tier. Best for real-time reading.</dd></div>
+        <div><dt>OpenRouter</dt><dd>One key, ~400 models incl. free tiers. List pulled live from their API.</dd></div>
+        <div><dt>Anthropic</dt><dd>Claude — strongest on ambiguous system-design and trade-off questions.</dd></div>
+        <div><dt>OpenAI</dt><dd>GPT models, JSON-mode streaming.</dd></div>
+        <div><dt>Local · Ollama</dt><dd>Runs against <code>localhost:11434</code>. Nothing leaves your machine.</dd></div>
+      </dl>
+    </section>
+
+    <!-- privacy / infra -->
+    <section class="wrap" id="keys">
+      <div class="feature-row reveal">
+        <div>
+          <p class="eyebrow">Keys &amp; storage</p>
+          <h3>Your key lives in the OS keychain</h3>
+          <p>
+            The API key is written to the Windows Credential Manager / macOS Keychain through the system
+            <code>keyring</code> API — never to a config file, never to disk in plain text. Settings
+            (provider, model, résumé context, language) sit in local storage.
+          </p>
+          <p>
+            There's no WhisperAI account and no server in the path. Requests go straight from your
+            machine to the endpoint you chose. <a href="/security">The full privacy story →</a>
+          </p>
+        </div>
+        <div class="feature-row__media">
+          <pre class="code">key      ▸ Windows Credential Manager
+settings ▸ localStorage (this machine)
+prompts  ▸ you → api.groq.com  (direct)
+server   ▸ none</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- resume -->
+    <section class="wrap" id="resume">
+      <div class="feature-row reveal">
+        <div>
+          <p class="eyebrow">Context</p>
+          <h3>Answers in your own words</h3>
+          <p>
+            Paste your résumé, your real projects and the numbers that go with them once. Every answer
+            after that is phrased around your actual stack and history — so the STAR story is one you
+            could genuinely have lived.
+          </p>
+        </div>
+        <div class="feature-row__media">
+          <pre class="code"># résumé context (injected into every prompt)
+- 4y backend, Go + Postgres, payments
+- cut checkout p99 140ms → 32ms
+- ran the migration off the monolith</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- window controls -->
+    <section class="section wrap" id="window" style="border-top:1px solid var(--line)">
+      <div class="prose stack reveal" style="margin-bottom:2rem">
+        <p class="eyebrow">The window itself</p>
+        <h2 class="display">Frameless, dimmable, collapsible.</h2>
+      </div>
+      <dl class="spec reveal">
+        <div><dt id="hotkeys">hotkeys</dt><dd>
+          <b>Ctrl+Shift+H</b> hide / show · <b>Ctrl+\</b> collapse to the bar ·
+          <b>Ctrl+Shift+T</b> click-through · <b>Ctrl+Shift+Q</b> quit. Work even when another app is focused.
+        </dd></div>
+        <div><dt>opacity</dt><dd>A slider from 30% to 100%. Drop it and the overlay fades toward the desktop.</dd></div>
+        <div><dt>collapse</dt><dd>One key hides everything but the top bar; the rest of the window goes fully transparent.</dd></div>
+        <div style="border:0"><dt>chrome</dt><dd>No title bar, no taskbar entry, always on top. Drag it by the bar.</dd></div>
+      </dl>
+    </section>
+
+    <section class="section wrap">
+      <div class="cta-block reveal">
+        <h2 class="display">That's the whole app.</h2>
+        <p class="lede">No upsell tier, no locked features. Get it and set it up in about two minutes.</p>
+        <div class="hero__cta">
+          <a class="btn btn-primary" href="/download"><i data-lucide="monitor-down"></i> Download</a>
+          <a class="btn btn-ghost" href="/faq">Read the FAQ</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-foot"></div>
+</body>
+</html>

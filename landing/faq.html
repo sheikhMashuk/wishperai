@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FAQ — WhisperAI</title>
+  <meta name="description" content="Straight answers about detectability, audio capture, models and keys, platforms, cost, and what happens to your data." />
+  <meta property="og:title" content="WhisperAI — FAQ" />
+  <meta property="og:description" content="Detectability, audio, models, platforms, cost, data — the direct answers." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/site.css?v=4" />
+  <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/assets/main.js?v=4" defer></script>
+</head>
+<body data-page="faq">
+  <div id="site-head"></div>
+
+  <main>
+    <header class="section--tight wrap" style="padding-top: clamp(7rem, 14vw, 9rem)">
+      <div class="prose stack reveal">
+        <p class="eyebrow">FAQ</p>
+        <h1 class="display">Direct answers.</h1>
+        <p class="lede">If something here is vague, it's a bug — tell me and I'll fix the wording.</p>
+      </div>
+    </header>
+
+    <section class="section--tight wrap">
+      <div class="prose reveal">
+
+        <div class="faq-item" id="detect">
+          <button class="faq-q">Can the interviewer tell I'm using it? <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            Not through the call. The overlay is excluded from screen capture at the compositor level, and
+            nothing joins the meeting, so there's no participant and no recording notice. The realistic
+            risks are off-screen: a phone camera on your monitor, a managed work laptop with a monitoring
+            agent, or your own eyes drifting to a fixed spot on screen while you "think". Read
+            <a href="/security#capture">the full breakdown</a> before you rely on it.
+          </p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">How does it hear the interviewer with no bot? <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            WASAPI loopback capture on Windows — it reads whatever is playing out of your speakers or
+            headphones, in parallel with your microphone. No virtual audio cable, no meeting bot. The call
+            software isn't involved and can't see it.
+          </p></div></div>
+        </div>
+
+        <div class="faq-item" id="models">
+          <button class="faq-q">Which models can I use? <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            Groq, OpenAI, Anthropic, OpenRouter, or a local model through Ollama. WhisperAI fetches each
+            provider's live model list and picks a fast default — so new models show up on their own and
+            retired ones get swapped out without an error. Groq is the best starting point for speed.
+          </p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Does it cost anything? <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            The app is free and source-available. You pay whatever your model provider charges — which,
+            on Groq's or OpenRouter's free tier, is nothing for interview-length usage. With local Ollama
+            it's just your electricity.
+          </p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Is anything I say or ask stored? <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            No. There's no account and no WhisperAI server. Your key is in the OS keychain, settings are in
+            local storage, the transcript is held in memory and dropped. Prompts go straight to your
+            provider — their retention policy applies, not ours, because we never see them.
+            <a href="/security#data">Details here.</a>
+          </p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Which platforms? <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            Windows 10 and 11 (64-bit) is the primary build and the most tested. There's a macOS build for
+            Apple silicon with the same capture-exclusion path. No Linux build yet.
+          </p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">How fast is "fast"? <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            On Groq's small models the first words of the headline land in roughly 150–300&nbsp;ms and the
+            full short answer in well under a second. Bigger models (70B-class, Claude) trade a second or
+            two of latency for a better answer. It streams either way, so you're reading as it writes.
+          </p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">The <code>llama-3.1-8b-instant</code> model gives a 404. <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            That model was retired by Groq. Current builds fetch the live list and self-heal, so it
+            shouldn't happen — if it does, open Settings and hit the reload button next to the model
+            field, or fully restart the app so the migration runs.
+          </p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Is this against the rules? <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            For a normal live conversational interview, there's usually no rule that covers a private
+            overlay on your own machine. For proctored assessments, take-homes, or any process that
+            explicitly says "no assistance" — yes, it is, and you shouldn't. There's a
+            <a href="/security#data">note on this</a> on the privacy page.
+          </p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Who makes this? <i data-lucide="plus"></i></button>
+          <div class="faq-a"><div><p>
+            One engineer. It started as a thing I wanted for my own interviews. No company, no funding, no
+            data business — the incentive to keep it private is that there's nothing to gain by not.
+          </p></div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="cta-block reveal">
+        <h2 class="display">Still unsure?</h2>
+        <p class="lede">The code answers most of what's left. It's all on GitHub.</p>
+        <div class="hero__cta">
+          <a class="btn btn-ghost" href="https://github.com/sheikhMashuk/wishperai" target="_blank" rel="noopener"><i data-lucide="github"></i> Read the source</a>
+          <a class="btn btn-primary" href="/download"><i data-lucide="monitor-down"></i> Download</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-foot"></div>
+</body>
+</html>

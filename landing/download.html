@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Download — WhisperAI</title>
+  <meta name="description" content="Download WhisperAI for Windows or macOS, or build it from source. System requirements, first-run setup, and the keyboard shortcuts." />
+  <meta property="og:title" content="WhisperAI — download" />
+  <meta property="og:description" content="Get it for Windows or macOS. Two-minute setup, bring your own key." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/site.css?v=4" />
+  <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/assets/main.js?v=4" defer></script>
+</head>
+<body data-page="download">
+  <div id="site-head"></div>
+
+  <main>
+    <header class="hero wrap" style="padding-top: clamp(7rem, 14vw, 9rem)">
+      <div class="hero__aura"></div>
+      <p class="eyebrow reveal">Download</p>
+      <h1 class="display reveal d1" style="max-width:16ch">Two minutes from download to first answer.</h1>
+      <p class="lede reveal d2" style="max-width:44ch">Free, source-available, no account. You'll need one API key — free tiers are fine.</p>
+      <div class="hero__cta reveal d3">
+        <a class="btn btn-primary" href="#" aria-disabled="true"><i data-lucide="monitor-down"></i> Windows 10 / 11 (x64)</a>
+        <a class="btn btn-ghost" href="#" aria-disabled="true"><i data-lucide="apple"></i> macOS (Apple silicon)</a>
+      </div>
+      <p class="reveal d3" style="margin-top:1rem;font-family:var(--mono);font-size:.75rem;color:var(--text-3)">
+        v0.1 · ~9&nbsp;MB · SHA-256 published with each release ·
+        <a href="https://github.com/sheikhMashuk/wishperai/releases" target="_blank" rel="noopener">all releases</a>
+      </p>
+    </header>
+
+    <!-- requirements -->
+    <section class="section wrap" id="requirements" style="border-top:1px solid var(--line)">
+      <div class="prose stack reveal" style="margin-bottom:2rem"><h2 class="display">What you need</h2></div>
+      <dl class="spec reveal">
+        <div><dt>OS</dt><dd><b>Windows 10 or 11, 64-bit.</b> macOS 13+ on Apple silicon for the mac build.</dd></div>
+        <div><dt>a model</dt><dd>An API key for <b>Groq</b>, OpenAI, Anthropic or OpenRouter — each has a free tier. Or a local <b>Ollama</b> install, no key.</dd></div>
+        <div><dt>audio</dt><dd>Whatever you already use for calls. WhisperAI reads your default output device; no extra drivers.</dd></div>
+        <div><dt>a mic</dt><dd>For speech recognition. The one built into your laptop is enough.</dd></div>
+        <div style="border:0"><dt>disk</dt><dd>~30&nbsp;MB installed. No background service, no auto-start unless you add it.</dd></div>
+      </dl>
+    </section>
+
+    <!-- setup -->
+    <section class="section wrap" id="setup" style="border-top:1px solid var(--line)">
+      <div class="prose stack reveal" style="margin-bottom:2rem">
+        <h2 class="display">First run</h2>
+        <p style="color:var(--text-2)">The window opens centred, frameless, on top. Drag it by the bar to wherever you want it.</p>
+      </div>
+      <ol class="steps reveal">
+        <li>
+          <h3>Open Settings, pick a provider</h3>
+          <p>Click the gear. Choose Groq to start — it's the fastest and the free tier is generous. Paste your key; it goes straight into the OS keychain.</p>
+        </li>
+        <li>
+          <h3>The model fills itself in</h3>
+          <p>As soon as the key is valid, the model dropdown loads that provider's live list and selects a fast default. You can pick a different one, but you don't have to.</p>
+        </li>
+        <li>
+          <h3>Add your background (optional but worth it)</h3>
+          <p>Paste your résumé and a few real project details in the context box. Every answer after that is phrased around your actual history.</p>
+        </li>
+        <li>
+          <h3>Hit Listen — or just type</h3>
+          <p>Listen starts transcription and auto-answers detected questions. Or type into the box and press <kbd>Enter</kbd>. During a call, use <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> so clicks pass through to your editor.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- hotkeys -->
+    <section class="section wrap" id="hotkeys" style="border-top:1px solid var(--line)">
+      <div class="prose stack reveal" style="margin-bottom:2rem"><h2 class="display">Keyboard shortcuts</h2>
+        <p style="color:var(--text-2)">Global — they work even when the call window or your editor has focus.</p>
+      </div>
+      <dl class="spec reveal">
+        <div><dt><kbd>Ctrl+Shift+H</kbd></dt><dd>Hide the overlay completely, or bring it back. The panic button.</dd></div>
+        <div><dt><kbd>Ctrl+\</kbd></dt><dd>Collapse to just the top bar; the rest of the window goes transparent.</dd></div>
+        <div><dt><kbd>Ctrl+Shift+T</kbd></dt><dd>Toggle click-through — the mouse stops hitting the overlay.</dd></div>
+        <div style="border:0"><dt><kbd>Ctrl+Shift+Q</kbd></dt><dd>Quit immediately.</dd></div>
+      </dl>
+      <p class="reveal" style="margin-top:1rem;color:var(--text-3);font-size:.9rem">On some keyboards <kbd>Ctrl+Shift+H</kbd> clashes; <kbd>Alt+Shift+H</kbd> does the same thing.</p>
+    </section>
+
+    <!-- from source -->
+    <section class="section wrap" id="source" style="border-top:1px solid var(--line)">
+      <div class="feature-row reveal" style="border:0;padding-top:0">
+        <div>
+          <h3>Build it from source</h3>
+          <p>The client is a Tauri app — a Rust core and a small React front end. If you'd rather compile it yourself and read every line first, that's the intended path for the cautious.</p>
+          <p><a href="https://github.com/sheikhMashuk/wishperai" target="_blank" rel="noopener">github.com/sheikhMashuk/wishperai</a></p>
+        </div>
+        <div class="feature-row__media">
+          <pre class="code">git clone https://github.com/sheikhMashuk/wishperai
+cd wishperai/client
+npm install
+npm run tauri dev      # or: npm run tauri build</pre>
+          <p style="font-size:.85rem;color:var(--text-3)">Needs Node 20.19+ and a Rust toolchain.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="cta-block reveal">
+        <h2 class="display">Get it.</h2>
+        <p class="lede">Then read <a href="/features">what it does</a> or <a href="/security">how it stays hidden</a> while it downloads.</p>
+        <div class="hero__cta">
+          <a class="btn btn-primary" href="#"><i data-lucide="monitor-down"></i> Download for Windows</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-foot"></div>
+</body>
+</html>
