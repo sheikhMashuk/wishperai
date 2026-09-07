@@ -66,12 +66,16 @@
         </div>
         <div class="mock__body">
           <div class="mock__card">
-            <div class="mock__tags"><b id="mockTag">System design</b><span id="mockMs">— ms</span><span>Groq · gpt-oss-20b</span></div>
-            <p class="mock__q" id="mockQ">"…"</p>
-            <p class="mock__a caret" id="mockAnswer"></p>
-            <ul class="mock__pts" id="mockPts"></ul>
+            <div class="mock__tags"><b id="mockTag">System design</b><span id="mockMs">209 ms</span><span>Groq · gpt-oss-20b</span></div>
+            <p class="mock__q" id="mockQ">"How would you scale a WebSocket service to 100k connections?"</p>
+            <p class="mock__a" id="mockAnswer">"Async edge gateways behind a load balancer, connections sharded by a consistent-hash ring, room fan-out over Redis pub/sub."</p>
+            <ul class="mock__pts" id="mockPts">
+              <li>Zero-copy framing with a recycled buffer pool — no per-message allocation.</li>
+              <li>A client is pinned to one worker, so there is no cross-node chatter.</li>
+              <li>Bounded per-socket queues drop stale frames instead of stalling the loop.</li>
+            </ul>
           </div>
-          <div class="mock__live"><b>Live</b><span id="mockLive">listening…</span></div>
+          <div class="mock__live"><b>Live</b><span id="mockLive">how would you scale a websocket service…</span></div>
         </div>
       </div>
     </section>
