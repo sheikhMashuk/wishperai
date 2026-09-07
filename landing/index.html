@@ -1,699 +1,704 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WhisperAI | #1 Undetectable AI Copilot for Technical Interviews</title>
-  <meta name="description" content="Sub-300ms real-time interview copilot that is 100% invisible on Zoom, Microsoft Teams, and Google Meet screen shares.">
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhisperAI — the invisible interview copilot</title>
+  <meta
+    name="description"
+    content="A frameless desktop overlay that hears the interviewer and streams an answer you can say out loud — invisible on Zoom, Meet, Teams and OBS. Bring any model from Groq, Claude, OpenAI, OpenRouter or local Ollama."
+  />
+  <meta property="og:title" content="WhisperAI — the invisible interview copilot" />
+  <meta property="og:description" content="Real-time, screen-share-proof interview copilot for Windows & macOS. Any model, your key." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#08080a',
+            panel: '#0e0e11',
+            accent: '#5b9dff',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js"></script>
 </head>
-<body class="bg-[#08090D] text-[#ECEEF2] font-sans antialiased overflow-x-hidden selection:bg-indigo-500/30 selection:text-white">
+<body class="bg-ink text-[var(--text)] antialiased">
 
-  <!-- Ambient Glow Mesh -->
-  <div class="ambient-glow fixed inset-0 pointer-events-none z-0">
-    <div class="glow-orb top-[-10%] left-1/2 -translate-x-1/2 w-[900px] h-[550px] bg-gradient-to-b from-indigo-600/18 via-purple-600/10 to-transparent rounded-full blur-[140px]"></div>
-    <div class="glow-orb top-[40%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[160px]"></div>
-    <div class="glow-orb top-[70%] right-[-10%] w-[700px] h-[700px] bg-indigo-600/10 rounded-full blur-[160px]"></div>
-  </div>
+  <div class="glow"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
 
-  <!-- STICKY HEADER -->
-  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#08090D]/70 border-b border-white/[0.06] transition-all duration-300">
-    <div class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-      <!-- Brand -->
-      <a href="#" class="flex items-center gap-2.5 group">
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
-          <i data-lucide="shield-check" class="w-4 h-4 text-white"></i>
-        </div>
-        <div class="flex items-baseline gap-1.5">
-          <span class="text-lg font-bold tracking-tight text-white">Whisper<span class="text-indigo-400">AI</span></span>
-          <span class="text-[10px] uppercase font-mono tracking-wider px-1.5 py-0.5 rounded bg-indigo-950/80 text-indigo-300 border border-indigo-500/30">v1.2</span>
-        </div>
+  <!-- ================= HEADER ================= -->
+  <header id="hdr" class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-300">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
+      <a href="#top" class="flex items-center gap-2.5">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-accent/15 text-accent">
+          <i data-lucide="scan-eye" class="h-4 w-4"></i>
+        </span>
+        <span class="text-[15px] font-bold tracking-tight">WhisperAI</span>
       </a>
-
-      <!-- Nav Links -->
-      <nav class="hidden md:flex items-center gap-7 text-sm text-zinc-400 font-medium">
-        <a href="#demo" class="hover:text-white transition-colors">Interactive Demo</a>
-        <a href="#undetectable" class="hover:text-white transition-colors">Undetectability</a>
-        <a href="#features" class="hover:text-white transition-colors">Features</a>
-        <a href="#comparison" class="hover:text-white transition-colors">Comparison</a>
-        <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+      <nav class="hidden items-center gap-8 text-[13px] text-[var(--text-dim)] md:flex">
+        <a href="#demo" class="transition-colors hover:text-white">Live demo</a>
+        <a href="#stealth" class="transition-colors hover:text-white">Stealth</a>
+        <a href="#features" class="transition-colors hover:text-white">Features</a>
+        <a href="#models" class="transition-colors hover:text-white">Models</a>
+        <a href="#faq" class="transition-colors hover:text-white">FAQ</a>
       </nav>
-
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-3">
-        <a href="#download" class="relative group overflow-hidden rounded-full p-[1px] focus:outline-none">
-          <span class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full animate-gradient-x"></span>
-          <span class="relative flex items-center gap-2 px-4 py-2 rounded-full bg-[#0E1017] hover:bg-opacity-80 text-xs sm:text-sm font-semibold text-white transition-all">
-            <i data-lucide="download" class="w-3.5 h-3.5 text-indigo-400"></i>
-            <span>Get for Windows</span>
-          </span>
-        </a>
-      </div>
+      <a
+        href="#download"
+        class="cta-shine flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--accent-ink)] transition-transform hover:scale-[1.03]"
+      >
+        <i data-lucide="download" class="h-3.5 w-3.5"></i> Download
+      </a>
     </div>
   </header>
 
-  <main class="relative z-10 pt-28 sm:pt-36">
+  <main id="top" class="relative z-10">
 
-    <!-- HERO SECTION -->
-    <section class="max-w-5xl mx-auto px-5 sm:px-8 text-center flex flex-col items-center">
-      <!-- Badge -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-zinc-300 mb-8 backdrop-blur-md hover:border-white/20 transition-all cursor-default">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="font-medium">Stream-Safe Windows Kernel Hook (`WDA_EXCLUDEFROMCAPTURE`)</span>
+    <!-- ================= HERO ================= -->
+    <section class="mx-auto max-w-5xl px-5 pt-32 text-center sm:px-8 sm:pt-44">
+      <div class="intro" style="animation-delay:0s">
+        <span class="inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-white/[0.03] px-3.5 py-1.5 text-xs text-[var(--text-dim)] backdrop-blur">
+          <span class="dot text-accent"></span>
+          Invisible to screen capture — <span class="font-mono text-[var(--text)]">WDA_EXCLUDEFROMCAPTURE</span>
+        </span>
       </div>
 
-      <!-- Main Headline (Cluely serif style) -->
-      <h1 class="font-serif text-5xl sm:text-7xl lg:text-[82px] font-normal leading-[1.04] tracking-[-0.03em] text-white max-w-4xl">
-        The <span class="italic font-normal bg-gradient-to-r from-indigo-200 via-white to-purple-200 bg-clip-text text-transparent">#1 Undetectable</span> AI Copilot for Technical Interviews.
+      <h1 class="intro mx-auto mt-8 max-w-4xl text-[42px] font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-[68px]" style="animation-delay:0.08s">
+        The interview copilot<br class="hidden sm:block" />
+        that <span class="font-serif italic font-normal text-accent">no one else can see.</span>
       </h1>
 
-      <!-- Subtitle -->
-      <p class="mt-6 text-base sm:text-lg text-zinc-400 max-w-2xl font-normal leading-relaxed">
-        WhisperAI listens to your interviewer, captures live system audio, and renders sub-300ms answers & code — completely invisible on Zoom, Microsoft Teams, and Google Meet.
+      <p class="intro mx-auto mt-6 max-w-2xl text-[15px] leading-relaxed text-[var(--text-dim)] sm:text-[17px]" style="animation-delay:0.16s">
+        A frameless desktop overlay that hears the interviewer, detects the question, and streams an
+        answer you can say out loud — while staying completely absent from Zoom, Google Meet, Teams
+        and OBS screen shares.
       </p>
 
-      <!-- CTA Buttons -->
-      <div class="mt-9 flex flex-col sm:flex-row items-center gap-4">
-        <a href="#download" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white font-semibold text-sm shadow-xl shadow-indigo-600/25 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] active:scale-[0.98]">
-          <i data-lucide="laptop" class="w-4 h-4"></i>
-          <span>Download for Windows (x64)</span>
+      <div class="intro mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row" style="animation-delay:0.24s">
+        <a href="#download" class="cta-shine flex w-full items-center justify-center gap-2.5 rounded-xl bg-accent px-7 py-3.5 text-sm font-semibold text-[var(--accent-ink)] transition-transform hover:scale-[1.02] sm:w-auto">
+          <i data-lucide="monitor-down" class="h-4 w-4"></i> Download for Windows
         </a>
-        <a href="#demo" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.09] border border-white/10 text-zinc-200 font-medium text-sm flex items-center justify-center gap-2 transition-all">
-          <i data-lucide="play" class="w-3.5 h-3.5 text-indigo-400"></i>
-          <span>Try Interactive Demo</span>
+        <a href="#demo" class="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-white/[0.04] px-6 py-3.5 text-sm font-medium text-[var(--text)] transition-colors hover:bg-white/[0.08] sm:w-auto">
+          <i data-lucide="play" class="h-3.5 w-3.5 text-accent"></i> Try the live demo
         </a>
       </div>
 
-      <div class="mt-4 flex items-center gap-4 text-xs text-zinc-500 font-mono">
-        <span>Windows 10 / 11 64-bit</span>
-        <span>•</span>
-        <span>Native Rust + Tauri v2 Binary</span>
-        <span>•</span>
-        <span>Zero Lag (<300ms)</span>
+      <div class="intro mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 font-mono text-[11px] text-[var(--text-faint)]" style="animation-delay:0.32s">
+        <span>Windows 10 / 11</span><span>·</span>
+        <span>macOS stealth build</span><span>·</span>
+        <span>Rust + Tauri v2</span><span>·</span>
+        <span>your API key, your model</span>
       </div>
-    </section>
 
-    <!-- INTERACTIVE HERO DEMO SIMULATOR -->
-    <section id="demo" class="max-w-5xl mx-auto px-4 sm:px-8 mt-16 sm:mt-24">
-      <div class="relative rounded-3xl p-1 bg-gradient-to-b from-white/15 via-white/5 to-transparent shadow-2xl">
-        <div class="rounded-[22px] bg-[#0C0E15]/95 border border-white/10 p-4 sm:p-7 backdrop-blur-2xl overflow-hidden">
-          
-          <!-- Simulator Controls Bar -->
-          <div class="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-white/10">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Test Copilot Preset:</span>
-              <div class="flex flex-wrap gap-1.5" id="presetButtons">
-                <button class="preset-btn active px-3 py-1 rounded-lg text-xs font-medium bg-indigo-600 text-white transition-all" data-preset="sysdesign">System Design (100k WS)</button>
-                <button class="preset-btn px-3 py-1 rounded-lg text-xs font-medium bg-white/5 hover:bg-white/10 text-zinc-300 transition-all" data-preset="leetcode">Algorithm (LRU Cache)</button>
-                <button class="preset-btn px-3 py-1 rounded-lg text-xs font-medium bg-white/5 hover:bg-white/10 text-zinc-300 transition-all" data-preset="behavioral">STAR Behavioral</button>
+      <!-- hero overlay mock -->
+      <div class="intro mt-16 sm:mt-20" style="animation-delay:0.4s">
+        <div class="mx-auto max-w-2xl rounded-2xl border border-[var(--line-strong)] bg-[rgba(14,14,17,0.9)] p-2 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.7)] backdrop-blur-2xl">
+          <div class="overflow-hidden rounded-xl">
+            <!-- bar -->
+            <div class="flex h-11 items-center justify-between px-2.5">
+              <div class="flex items-center gap-2">
+                <span class="dot text-accent"></span>
+                <span class="text-[12px] font-semibold tracking-wide text-[var(--text-dim)]">WhisperAI</span>
+                <span class="flex items-center gap-1.5 text-[11px] text-[var(--text-faint)]">
+                  <span class="wave"><i></i><i></i><i></i><i></i><i></i></span> 07:12
+                </span>
+              </div>
+              <div class="flex items-center gap-1 text-[var(--text-faint)]">
+                <span class="rounded-lg bg-[var(--danger)]/15 px-2.5 py-1 text-[12px] font-medium text-[var(--danger)]">Stop</span>
+                <span class="grid h-7 w-7 place-items-center rounded-lg"><i data-lucide="unlock" class="h-3.5 w-3.5"></i></span>
+                <span class="grid h-7 w-7 place-items-center rounded-lg"><i data-lucide="settings-2" class="h-3.5 w-3.5"></i></span>
+                <span class="grid h-7 w-7 place-items-center rounded-lg"><i data-lucide="chevron-up" class="h-3.5 w-3.5"></i></span>
+                <span class="grid h-7 w-7 place-items-center rounded-lg"><i data-lucide="eye" class="h-3.5 w-3.5"></i></span>
               </div>
             </div>
-
-            <!-- Trigger Button -->
-            <button id="simulateBtn" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-md shadow-emerald-900/30 transition-all active:scale-95">
-              <i data-lucide="mic" class="w-3.5 h-3.5"></i>
-              <span>Simulate Interviewer Question</span>
-            </button>
-          </div>
-
-          <!-- THE CLUELY-STYLE FLOATING HUD SIMULATOR -->
-          <div class="mt-6 flex justify-center">
-            
-            <!-- HUD CONTAINER -->
-            <div id="hudContainer" class="w-full max-w-2xl rounded-2xl border border-white/15 shadow-2xl overflow-hidden transition-all duration-300 bg-[#0E1018]/95 backdrop-blur-2xl">
-              
-              <!-- 1. HUD TOP CAPSULE -->
-              <div class="h-11 px-3.5 flex items-center justify-between border-b border-white/10 bg-white/[0.03]">
-                <!-- Brand & Stream Safe -->
-                <div class="flex items-center gap-2">
-                  <span class="relative flex h-2 w-2">
-                    <span id="demoPulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span id="demoDot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  <span class="text-xs font-bold uppercase tracking-wider text-white">WhisperAI</span>
-                  
-                  <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30">
-                    <i data-lucide="shield-check" class="w-2.5 h-2.5"></i>
-                    <span>Stream-Safe</span>
-                  </span>
+            <!-- chips -->
+            <div class="flex gap-1.5 border-t border-[var(--line)] px-2.5 py-1.5">
+              <span class="rounded-md border border-[var(--line)] bg-white/[0.03] px-2 py-1 text-[11px] text-[var(--text-dim)]">Answer this</span>
+              <span class="rounded-md border border-[var(--line)] bg-white/[0.03] px-2 py-1 text-[11px] text-[var(--text-dim)]">What do I say?</span>
+              <span class="rounded-md border border-[var(--line)] bg-white/[0.03] px-2 py-1 text-[11px] text-[var(--text-dim)]">Follow-up</span>
+              <span class="rounded-md border border-[var(--line)] bg-white/[0.03] px-2 py-1 text-[11px] text-[var(--text-dim)]">Recap</span>
+            </div>
+            <!-- answer -->
+            <div class="space-y-2 px-2.5 py-3 text-left">
+              <div class="rounded-xl border border-[var(--line)] bg-white/[0.03] px-3.5 py-3">
+                <div class="mb-2 flex items-center gap-2 text-[11px] text-[var(--text-faint)]">
+                  <span class="rounded-md bg-white/[0.06] px-1.5 py-0.5 font-medium text-[var(--text-dim)]">System design</span>
+                  <span>212 ms</span><span>Groq · gpt-oss-20b</span>
                 </div>
-
-                <!-- Animated Audio Waveform -->
-                <div class="flex items-center gap-1 bg-black/40 px-3 py-1 rounded-full border border-white/5" id="audioWaveform">
-                  <div class="w-1 h-3 rounded-full bg-emerald-400 animate-wave-1"></div>
-                  <div class="w-1 h-5 rounded-full bg-emerald-400 animate-wave-2"></div>
-                  <div class="w-1 h-2 rounded-full bg-emerald-400 animate-wave-3"></div>
-                  <div class="w-1 h-4 rounded-full bg-emerald-400 animate-wave-1"></div>
-                  <div class="w-1 h-1.5 rounded-full bg-emerald-400 animate-wave-2"></div>
-                </div>
-
-                <!-- Action Buttons with HIDE, OPACITY & LOCK Toggle -->
-                <div class="flex items-center gap-1.5 relative">
-                  <!-- Listen Toggle -->
-                  <button id="demoListenBtn" class="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all">
-                    <i data-lucide="square" class="w-2.5 h-2.5 fill-current"></i>
-                    <span>Listening</span>
-                  </button>
-
-                  <!-- PROMINENT HIDE / UNHIDE BUTTON -->
-                  <button id="demoHideBtn" title="Toggle Stealth Hide Mode" class="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-white/10 hover:bg-white/20 border border-white/10 text-zinc-200 transition-all">
-                    <i data-lucide="eye-off" class="w-3 h-3 text-zinc-400" id="hideIcon"></i>
-                    <span id="hideText">Hide</span>
-                  </button>
-
-                  <!-- TRANSPARENCY METER / SLIDER TOGGLE -->
-                  <div class="relative">
-                    <button id="demoOpacityBtn" title="HUD Transparency Meter" class="flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-mono font-medium bg-white/10 hover:bg-white/20 border border-white/10 text-zinc-300 transition-all">
-                      <i data-lucide="sun" class="w-3 h-3 text-amber-300"></i>
-                      <span id="demoOpacityText">95%</span>
-                    </button>
-
-                    <!-- Opacity Slider Dropdown -->
-                    <div id="demoOpacityPopover" class="hidden absolute top-8 right-0 z-50 w-48 p-3 rounded-2xl bg-[#121522]/95 border border-white/15 shadow-2xl backdrop-blur-xl space-y-2">
-                      <div class="flex items-center justify-between text-[11px] font-semibold text-zinc-200">
-                        <span class="flex items-center gap-1">
-                          <i data-lucide="sliders" class="w-3 h-3 text-indigo-400"></i>
-                          <span>Transparency</span>
-                        </span>
-                        <span class="font-mono text-indigo-400" id="demoOpacityVal">95%</span>
-                      </div>
-                      <input id="demoOpacityRange" type="range" min="0.2" max="1.0" step="0.05" value="0.95" class="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-indigo-500">
-                      <div class="grid grid-cols-4 gap-1 pt-0.5">
-                        <button class="demo-op-preset px-1 py-0.5 rounded text-[10px] font-mono bg-white/5 hover:bg-white/10 text-zinc-300" data-op="0.3">30%</button>
-                        <button class="demo-op-preset px-1 py-0.5 rounded text-[10px] font-mono bg-white/5 hover:bg-white/10 text-zinc-300" data-op="0.6">60%</button>
-                        <button class="demo-op-preset px-1 py-0.5 rounded text-[10px] font-mono bg-white/5 hover:bg-white/10 text-zinc-300" data-op="0.85">85%</button>
-                        <button class="demo-op-preset px-1 py-0.5 rounded text-[10px] font-mono bg-indigo-600 text-white" data-op="1.0">100%</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- LOCK / UNLOCK TOGGLE -->
-                  <button id="demoLockBtn" title="Click-Through Lock (Pass clicks to background)" class="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-zinc-200 transition-all">
-                    <i data-lucide="unlock" class="w-3 h-3" id="demoLockIcon"></i>
-                  </button>
-
-                  <button class="p-1 rounded-full bg-white/5 text-zinc-400 hover:text-zinc-200">
-                    <i data-lucide="settings" class="w-3 h-3"></i>
-                  </button>
-                </div>
+                <p class="text-[11px] text-[var(--text-faint)]">"How would you scale a WebSocket service to 100k connections?"</p>
+                <p class="mt-1.5 text-[13.5px] leading-relaxed text-white">
+                  <span id="heroType"></span><span class="caret"></span>
+                </p>
+                <ul class="mt-2 space-y-1.5" id="heroBullets"></ul>
               </div>
-
-              <!-- UNLOCK BANNER (When Locked) -->
-              <div id="demoLockBanner" class="hidden bg-amber-500/25 border-b border-amber-500/40 px-3 py-1.5 flex items-center justify-between text-xs text-amber-200 animate-fadeIn">
-                <div class="flex items-center gap-1.5">
-                  <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-400 animate-pulse"></i>
-                  <span class="text-[11px]"><strong>Pass-Through Active:</strong> Mouse clicks pass to windows below.</span>
-                </div>
-                <button id="demoUnlockBtn" class="px-2.5 py-0.5 rounded-full bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-[10px] shadow transition-all active:scale-95">
-                  Unlock HUD
-                </button>
+              <div class="flex items-center gap-2 border-t border-[var(--line)] px-0.5 pt-2 text-[11px]">
+                <span class="font-medium text-accent">Live</span>
+                <span class="text-[var(--text-dim)]">…scaling real-time WebSocket infrastructure</span>
               </div>
-
-              <!-- 2. EXPANDED HUD CONTENT -->
-              <div id="hudBody" class="p-4 space-y-3">
-                
-                <!-- Live Spoken Direct Response (Cluely style) -->
-                <div class="p-3.5 rounded-xl bg-gradient-to-b from-indigo-950/40 to-black/40 border border-indigo-500/25">
-                  <div class="flex items-center justify-between mb-1.5">
-                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20" id="demoBadge">
-                      <i data-lucide="layers" class="w-3 h-3"></i>
-                      <span>Architecture / System Design</span>
-                    </span>
-                    <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/70 px-1.5 py-0.5 rounded border border-emerald-500/30">⚡ 185ms Latency</span>
-                  </div>
-
-                  <h3 class="text-xs font-semibold text-zinc-100 mb-2" id="demoQuestion">
-                    "How do you design a real-time low-latency WebSocket cluster handling 100k concurrent connections?"
-                  </h3>
-
-                  <div class="p-2.5 rounded-lg bg-black/40 border border-white/5">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-300 block mb-1">Say This Out Loud:</span>
-                    <p class="text-xs text-zinc-200 font-medium leading-relaxed" id="demoAnswerText">
-                      "I'd architect this with an asynchronous Rust Tokio or Go edge gateway using epoll multiplexing and zero-copy buffer pools, paired with a Redis Dragonfly Pub/Sub backplane for sub-10ms room broadcasts."
-                    </p>
-                  </div>
-                </div>
-
-                <!-- Talking Points & STAR/Code Breakdown -->
-                <div class="p-3 rounded-xl bg-black/30 border border-white/5 text-xs space-y-2" id="demoExtra">
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block">Key Talking Points:</span>
-                  <ul class="space-y-1.5 text-zinc-300 text-[11px]" id="demoBulletList">
-                    <li class="flex items-start gap-2">
-                      <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0"></span>
-                      <span><strong>Zero-Copy I/O:</strong> Use tokio `bytes` crate recycling to eliminate heap allocation bottlenecks.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                      <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0"></span>
-                      <span><strong>State Partitioning:</strong> Consistent hashing ring to route client connections with zero cross-talk.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                      <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0"></span>
-                      <span><strong>Backpressure:</strong> Bounded per-socket RingBuffers to drop stale telemetry instead of stalling the event loop.</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Live Transcription Ribbon -->
-                <div class="flex items-center gap-2 pt-1 text-[11px] text-zinc-400 font-mono">
-                  <span class="text-indigo-400 font-bold">TRANSCRIPT:</span>
-                  <span class="truncate text-zinc-300" id="demoTranscriptText">"Can you explain your approach for scaling real-time WebSocket infrastructure?"</span>
-                </div>
-
-                <!-- Cluely Quick Assist Action Chips -->
-                <div class="flex flex-wrap items-center gap-1.5 pt-1 text-[11px]">
-                  <button class="demo-chip px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-200 border border-white/5 transition-all flex items-center gap-1" data-chip="assist">
-                    <i data-lucide="sparkles" class="w-3 h-3 text-blue-400"></i>
-                    <span>Assist</span>
-                  </button>
-                  <button class="demo-chip px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-200 border border-white/5 transition-all flex items-center gap-1" data-chip="quote">
-                    <i data-lucide="wand-2" class="w-3 h-3 text-indigo-400"></i>
-                    <span>What should I say?</span>
-                  </button>
-                  <button class="demo-chip px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-200 border border-white/5 transition-all flex items-center gap-1" data-chip="questions">
-                    <i data-lucide="message-square" class="w-3 h-3 text-amber-400"></i>
-                    <span>Follow-up questions</span>
-                  </button>
-                  <button class="demo-chip px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-200 border border-white/5 transition-all flex items-center gap-1" data-chip="recap">
-                    <i data-lucide="rotate-ccw" class="w-3 h-3 text-emerald-400"></i>
-                    <span>Recap</span>
-                  </button>
-                </div>
-
-                <!-- Cluely-style Bottom Prompt Input -->
-                <div class="pt-2">
-                  <div class="p-2 rounded-xl bg-black/50 border border-white/10 flex items-center justify-between text-xs">
-                    <span class="text-zinc-400 text-[11px] truncate">
-                      Ask about your screen or conversation, or <kbd class="px-1 py-0.5 rounded bg-white/10 text-[10px]">^</kbd> <kbd class="px-1 py-0.5 rounded bg-white/10 text-[10px]">↵</kbd> for Assist
-                    </span>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                      <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white/10 text-zinc-300">
-                        Smart
-                      </span>
-                      <button id="demoSendBtn" class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white shadow hover:bg-blue-500 transition-colors">
-                        <i data-lucide="send" class="w-3 h-3"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 3. COLLAPSED MINI GHOST PILL (Hidden by default, shown when user clicks Hide) -->
-              <div id="hudMiniPill" class="hidden p-3 flex items-center justify-between bg-gradient-to-r from-[#10131D] to-[#0A0C12]">
-                <div class="flex items-center gap-2">
-                  <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  <span class="text-xs font-semibold text-emerald-400">Stealth Pill Active (Invisible on Screen Shares)</span>
-                </div>
-                <button id="demoUnhideBtn" class="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md transition-all">
-                  <i data-lucide="eye" class="w-3 h-3"></i>
-                  <span>Unhide HUD (Ctrl+Shift+H)</span>
-                </button>
-              </div>
-
             </div>
           </div>
-
-          <!-- Bottom Hotkey Ribbon -->
-          <div class="mt-5 text-center text-xs text-zinc-500 font-mono">
-            <span>Global Shortcuts: </span>
-            <span class="text-zinc-300 bg-white/5 px-2 py-0.5 rounded border border-white/10">Ctrl+Shift+H</span> (Hide/Unhide)
-            <span class="mx-2">•</span>
-            <span class="text-zinc-300 bg-white/5 px-2 py-0.5 rounded border border-white/10">Ctrl+Shift+T</span> (Click-Through)
-            <span class="mx-2">•</span>
-            <span class="text-zinc-300 bg-white/5 px-2 py-0.5 rounded border border-white/10">Ctrl+Shift+Q</span> (Emergency Quit)
-          </div>
-
         </div>
       </div>
     </section>
 
-    <!-- UNDETECTABILITY SHOWCASE -->
-    <section id="undetectable" class="max-w-5xl mx-auto px-5 sm:px-8 mt-28 sm:mt-36">
-      <div class="text-center max-w-3xl mx-auto">
-        <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-500/30">Zero-Trace Architecture</span>
-        <h2 class="font-serif text-4xl sm:text-5xl font-normal text-white mt-4 tracking-[-0.02em]">
-          Engineered to be 100% Invisible to Interviewers.
-        </h2>
-        <p class="mt-4 text-zinc-400 text-sm sm:text-base leading-relaxed">
-          Unlike browser extensions or invasive recording bots, WhisperAI runs as a native Windows desktop overlay with direct Desktop Window Manager (DWM) exclusion.
+    <!-- ================= LOGO / CONTEXT MARQUEE ================= -->
+    <section class="mt-20 overflow-hidden border-y border-[var(--line)] py-4">
+      <div class="marquee font-mono text-[12px] uppercase tracking-wider text-[var(--text-faint)]">
+        <span>Zoom</span><span>Google Meet</span><span>Microsoft Teams</span><span>OBS Studio</span><span>CoderPad</span><span>HackerRank</span><span>Webex</span>
+        <span>Zoom</span><span>Google Meet</span><span>Microsoft Teams</span><span>OBS Studio</span><span>CoderPad</span><span>HackerRank</span><span>Webex</span>
+      </div>
+    </section>
+
+    <!-- ================= INTERACTIVE DEMO ================= -->
+    <section id="demo" class="mx-auto max-w-5xl px-4 pt-28 sm:px-8">
+      <div class="reveal text-center">
+        <span class="font-mono text-xs font-medium uppercase tracking-widest text-accent">Interactive</span>
+        <h2 class="mt-3 text-3xl font-bold tracking-[-0.02em] text-white sm:text-[40px]">Drive the overlay yourself.</h2>
+        <p class="mx-auto mt-3 max-w-xl text-sm text-[var(--text-dim)]">
+          This is the real UI. Fire a question, switch intents, hide it into a bar, lock click-through, dim it.
         </p>
       </div>
 
-      <!-- Side-by-Side Screen Comparison -->
-      <div class="mt-14 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- What You See -->
-        <div class="rounded-2xl p-6 bg-gradient-to-b from-[#121522] to-[#0A0C14] border border-indigo-500/30 shadow-xl relative overflow-hidden">
-          <div class="flex items-center justify-between mb-4">
-            <span class="text-xs font-bold uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
-              <i data-lucide="eye" class="w-4 h-4 text-indigo-400"></i>
-              <span>What You See (Your Monitor)</span>
-            </span>
-            <span class="text-[10px] font-mono bg-indigo-950 px-2 py-0.5 rounded text-indigo-300 border border-indigo-500/30">Overlay ON</span>
+      <div class="reveal mt-10 rounded-3xl border border-[var(--line)] bg-white/[0.02] p-4 sm:p-7">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] pb-5">
+          <div class="flex flex-wrap items-center gap-1.5" id="presets">
+            <button class="preset rounded-lg bg-accent px-3 py-1 text-xs font-medium text-[var(--accent-ink)]" data-preset="sys">System design</button>
+            <button class="preset rounded-lg bg-white/[0.05] px-3 py-1 text-xs font-medium text-[var(--text-dim)]" data-preset="dsa">Coding · LRU cache</button>
+            <button class="preset rounded-lg bg-white/[0.05] px-3 py-1 text-xs font-medium text-[var(--text-dim)]" data-preset="star">Behavioral · STAR</button>
           </div>
-          <div class="aspect-video rounded-xl bg-black/60 border border-white/10 p-3 relative flex flex-col justify-end">
-            <!-- Mock Zoom Call background -->
-            <div class="absolute inset-0 p-3 flex flex-col justify-between opacity-40">
-              <div class="flex justify-between items-center text-[10px] text-zinc-400">
-                <span>Zoom Meeting: Technical Round #2</span>
-                <span class="text-emerald-400">● 42:15</span>
-              </div>
-              <div class="flex items-center justify-center text-xs text-zinc-500">
-                [Interviewer Shared Screen / Coding Portal]
-              </div>
-            </div>
-            <!-- Floating WhisperAI HUD visible -->
-            <div class="relative z-10 p-3 rounded-xl bg-indigo-950/90 border border-indigo-500/40 shadow-2xl backdrop-blur-md">
-              <div class="flex items-center justify-between text-[10px] text-white font-bold mb-1">
-                <span>WhisperAI Copilot</span>
-                <span class="text-emerald-400 font-mono">180ms</span>
-              </div>
-              <p class="text-[11px] text-zinc-200">
-                "Use a Trie for O(k) prefix lookups and an LRU cache to evict cold search queries."
-              </p>
-            </div>
-          </div>
-          <p class="mt-3 text-xs text-zinc-400">
-            You see crisp, real-time hints and complete code snippets hovering seamlessly over Zoom, Teams, or CoderPad.
-          </p>
+          <button id="simBtn" class="flex items-center gap-1.5 rounded-lg bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/[0.12]">
+            <i data-lucide="mic" class="h-3.5 w-3.5 text-accent"></i> Simulate interviewer question
+          </button>
         </div>
 
-        <!-- What The Interviewer Sees -->
-        <div class="rounded-2xl p-6 bg-gradient-to-b from-[#121522] to-[#0A0C14] border border-emerald-500/30 shadow-xl relative overflow-hidden">
-          <div class="flex items-center justify-between mb-4">
-            <span class="text-xs font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
-              <i data-lucide="shield" class="w-4 h-4 text-emerald-400"></i>
-              <span>What Interviewer Sees (Screen Share)</span>
+        <div class="mt-6 flex justify-center">
+          <div id="hud" class="w-full max-w-2xl overflow-hidden rounded-2xl border border-[var(--line-strong)] bg-[rgba(14,14,17,0.94)] shadow-2xl backdrop-blur-2xl transition-colors">
+            <!-- top bar -->
+            <div class="flex h-11 items-center justify-between px-2.5">
+              <div class="flex items-center gap-2">
+                <span class="dot text-accent" id="hudDot"></span>
+                <span class="text-[12px] font-semibold tracking-wide text-[var(--text-dim)]">WhisperAI</span>
+                <span class="flex items-center gap-1.5 text-[11px] tabular-nums text-[var(--text-faint)]" id="hudMeter">
+                  <span class="wave" id="hudWave"><i></i><i></i><i></i><i></i><i></i></span>
+                  <span id="hudTimer">00:00</span>
+                </span>
+              </div>
+              <div class="flex items-center gap-1">
+                <button id="listenBtn" class="rounded-lg bg-[var(--danger)]/15 px-2.5 py-1 text-[12px] font-medium text-[var(--danger)] transition-colors">
+                  <span class="inline-flex items-center gap-1.5"><i data-lucide="square" class="h-3 w-3 fill-current"></i> Stop</span>
+                </button>
+                <button id="opacityBtn" class="grid h-7 min-w-7 place-items-center rounded-lg px-1 text-[10px] font-medium tabular-nums text-[var(--text-dim)] hover:bg-white/[0.08]">100</button>
+                <button id="lockBtn" class="grid h-7 w-7 place-items-center rounded-lg text-[var(--text-faint)] hover:bg-white/[0.08]"><i data-lucide="unlock" class="h-3.5 w-3.5" id="lockIcon"></i></button>
+                <button class="grid h-7 w-7 place-items-center rounded-lg text-[var(--text-faint)] hover:bg-white/[0.08]"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i></button>
+                <button class="grid h-7 w-7 place-items-center rounded-lg text-[var(--text-faint)] hover:bg-white/[0.08]"><i data-lucide="settings-2" class="h-3.5 w-3.5"></i></button>
+                <button id="collapseBtn" class="grid h-7 w-7 place-items-center rounded-lg text-[var(--text-faint)] hover:bg-white/[0.08]"><i data-lucide="chevron-up" class="h-3.5 w-3.5" id="collapseIcon"></i></button>
+                <button id="hideBtn" class="grid h-7 w-7 place-items-center rounded-lg text-[var(--text-faint)] hover:bg-white/[0.08]"><i data-lucide="eye" class="h-3.5 w-3.5"></i></button>
+                <button class="grid h-7 w-7 place-items-center rounded-lg text-[var(--text-faint)] hover:bg-[var(--danger)]/15 hover:text-[var(--danger)]"><i data-lucide="x" class="h-3.5 w-3.5"></i></button>
+              </div>
+            </div>
+
+            <!-- lock banner -->
+            <div id="lockBanner" class="hidden items-center justify-center gap-1.5 border-y border-amber-400/20 bg-amber-400/10 py-1 text-[11px] text-amber-300">
+              <i data-lucide="lock" class="h-3 w-3"></i> Click-through on — clicks pass to the app below. Tap to unlock.
+            </div>
+
+            <div id="hudBody">
+              <!-- opacity popover -->
+              <div id="opacityPop" class="hidden border-t border-[var(--line)] px-2.5 py-2">
+                <input id="opacityRange" type="range" min="30" max="100" value="100" class="w-full accent-accent" />
+              </div>
+
+              <!-- chips -->
+              <div class="flex gap-1.5 overflow-x-auto border-t border-[var(--line)] px-2.5 py-1.5" id="chips">
+                <button class="chip shrink-0 rounded-md border border-[var(--line)] bg-white/[0.03] px-2 py-1 text-[11px] text-[var(--text-dim)] transition-colors hover:bg-white/[0.08] hover:text-white" data-chip="assist">Answer this</button>
+                <button class="chip shrink-0 rounded-md border border-[var(--line)] bg-white/[0.03] px-2 py-1 text-[11px] text-[var(--text-dim)] transition-colors hover:bg-white/[0.08] hover:text-white" data-chip="say">What do I say?</button>
+                <button class="chip shrink-0 rounded-md border border-[var(--line)] bg-white/[0.03] px-2 py-1 text-[11px] text-[var(--text-dim)] transition-colors hover:bg-white/[0.08] hover:text-white" data-chip="follow">Follow-up</button>
+                <button class="chip shrink-0 rounded-md border border-[var(--line)] bg-white/[0.03] px-2 py-1 text-[11px] text-[var(--text-dim)] transition-colors hover:bg-white/[0.08] hover:text-white" data-chip="recap">Recap</button>
+              </div>
+
+              <!-- answer card -->
+              <div class="px-2.5 py-3">
+                <div class="rounded-xl border border-[var(--line)] bg-white/[0.03] px-3.5 py-3">
+                  <div class="mb-2 flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2 text-[11px] text-[var(--text-faint)]">
+                      <span id="demoBadge" class="rounded-md bg-white/[0.06] px-1.5 py-0.5 font-medium text-[var(--text-dim)]">System design</span>
+                      <span id="demoLatency">— ms</span>
+                      <span class="hidden sm:inline">Groq · gpt-oss-20b</span>
+                    </div>
+                    <i data-lucide="copy" class="h-3.5 w-3.5 text-[var(--text-faint)]"></i>
+                  </div>
+                  <p class="truncate text-[11px] text-[var(--text-faint)]" id="demoQuestion">"…"</p>
+                  <p class="mt-1.5 text-[13.5px] leading-relaxed text-white"><span id="demoAnswer"></span><span class="caret" id="demoCaret"></span></p>
+                  <ul class="mt-2 space-y-1.5" id="demoBullets"></ul>
+                  <pre id="demoCode" class="mt-2.5 hidden overflow-x-auto rounded-lg border border-[var(--line)] bg-black/40 px-2.5 py-2 font-mono text-[11.5px] leading-relaxed text-[var(--text-dim)]"></pre>
+                </div>
+              </div>
+
+              <!-- transcript -->
+              <div class="flex items-center gap-2 border-t border-[var(--line)] px-2.5 py-1.5 text-[11px]">
+                <span class="shrink-0 font-medium text-accent">Live</span>
+                <span class="truncate text-[var(--text-dim)]" id="demoTranscript">listening…</span>
+              </div>
+
+              <!-- input -->
+              <div class="border-t border-[var(--line)] p-2">
+                <div class="flex items-center gap-2 rounded-lg border border-[var(--line)] bg-black/25 px-3">
+                  <span class="flex-1 py-2 text-[12.5px] text-[var(--text-faint)]">Ask anything…</span>
+                  <button id="askBtn" class="rounded-md bg-accent px-2.5 py-1 text-[11px] font-semibold text-[var(--accent-ink)]">Ask</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- collapsed pill note -->
+            <div id="hudCollapsedNote" class="hidden px-3 py-2 text-center text-[11px] text-[var(--text-faint)]">
+              Collapsed to the bar — the rest of the window is transparent. Press <span class="font-mono text-[var(--text-dim)]">Ctrl+\</span> to expand.
+            </div>
+          </div>
+        </div>
+
+        <p class="mt-5 text-center font-mono text-[11px] text-[var(--text-faint)]">
+          <span class="rounded border border-[var(--line)] bg-white/[0.04] px-1.5 py-0.5 text-[var(--text-dim)]">Ctrl+Shift+H</span> hide ·
+          <span class="rounded border border-[var(--line)] bg-white/[0.04] px-1.5 py-0.5 text-[var(--text-dim)]">Ctrl+\</span> collapse ·
+          <span class="rounded border border-[var(--line)] bg-white/[0.04] px-1.5 py-0.5 text-[var(--text-dim)]">Ctrl+Shift+T</span> click-through ·
+          <span class="rounded border border-[var(--line)] bg-white/[0.04] px-1.5 py-0.5 text-[var(--text-dim)]">Ctrl+Shift+Q</span> quit
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= STEALTH ================= -->
+    <section id="stealth" class="mx-auto max-w-5xl px-5 pt-32 sm:px-8">
+      <div class="reveal text-center">
+        <span class="font-mono text-xs font-medium uppercase tracking-widest text-accent">Zero trace</span>
+        <h2 class="mx-auto mt-3 max-w-2xl text-3xl font-bold tracking-[-0.02em] text-white sm:text-[40px]">
+          Invisible on every screen share.
+        </h2>
+        <p class="mx-auto mt-3 max-w-xl text-sm text-[var(--text-dim)]">
+          Not a browser tab, not a meeting bot. A native window the compositor is told to skip when it
+          hands frames to any capture pipeline.
+        </p>
+      </div>
+
+      <div class="reveal mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div class="card p-6">
+          <div class="mb-3 flex items-center justify-between">
+            <span class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--text-dim)]">
+              <i data-lucide="eye" class="h-4 w-4 text-accent"></i> Your monitor
             </span>
-            <span class="text-[10px] font-mono bg-emerald-950 px-2 py-0.5 rounded text-emerald-300 border border-emerald-500/30">100% Invisible</span>
+            <span class="rounded bg-accent/15 px-2 py-0.5 font-mono text-[10px] text-accent">overlay on</span>
           </div>
-          <div class="aspect-video rounded-xl bg-black/60 border border-white/10 p-3 relative flex flex-col justify-between">
-            <!-- Clean shared screen without overlay -->
-            <div class="flex justify-between items-center text-[10px] text-zinc-400">
-              <span>Zoom Screen Share Preview</span>
-              <span class="text-emerald-400">● Live Stream</span>
+          <div class="relative flex aspect-video flex-col justify-end overflow-hidden rounded-xl border border-[var(--line)] bg-black/50 p-3">
+            <div class="absolute inset-0 flex flex-col justify-between p-3 text-[10px] text-[var(--text-faint)] opacity-50">
+              <div class="flex justify-between"><span>Zoom · Technical round</span><span class="text-[var(--ok)]">● 41:07</span></div>
+              <div class="text-center">[ interviewer's shared coding portal ]</div>
             </div>
-            <div class="flex items-center justify-center flex-1 text-xs text-zinc-400 text-center px-4">
-              [Clean IDE / Browser Screen — No WhisperAI Overlay Visible]
-            </div>
-            <div class="text-[10px] text-emerald-400 font-mono text-center bg-emerald-950/80 py-1 rounded border border-emerald-500/20">
-              ✓ Excluded from DWM Framebuffer by Windows Kernel
+            <div class="relative z-10 rounded-lg border border-accent/40 bg-[rgba(14,14,17,0.92)] p-2.5 backdrop-blur">
+              <div class="mb-1 flex justify-between text-[10px] font-semibold text-white"><span>WhisperAI</span><span class="font-mono text-[var(--ok)]">198 ms</span></div>
+              <p class="text-[11px] text-[var(--text-dim)]">"Hash map for O(1) lookup plus a doubly linked list for O(1) eviction."</p>
             </div>
           </div>
-          <p class="mt-3 text-xs text-zinc-400">
-            Windows completely skips WhisperAI when transmitting screen frames to Zoom, Teams, or screen-recording software.
-          </p>
+          <p class="mt-3 text-xs text-[var(--text-dim)]">You get a crisp, streaming answer floating over the call.</p>
+        </div>
+
+        <div class="card p-6">
+          <div class="mb-3 flex items-center justify-between">
+            <span class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--text-dim)]">
+              <i data-lucide="monitor-x" class="h-4 w-4 text-[var(--ok)]"></i> Their screen share
+            </span>
+            <span class="rounded bg-[var(--ok)]/15 px-2 py-0.5 font-mono text-[10px] text-[var(--ok)]">not captured</span>
+          </div>
+          <div class="flex aspect-video flex-col justify-between rounded-xl border border-[var(--line)] bg-black/50 p-3">
+            <div class="flex justify-between text-[10px] text-[var(--text-faint)]"><span>Zoom · screen share preview</span><span class="text-[var(--ok)]">● live</span></div>
+            <div class="flex-1 content-center text-center text-xs text-[var(--text-faint)]">[ clean IDE — no overlay anywhere ]</div>
+            <div class="rounded border border-[var(--ok)]/20 bg-[var(--ok)]/10 py-1 text-center font-mono text-[10px] text-[var(--ok)]">
+              ✓ excluded from the DWM framebuffer
+            </div>
+          </div>
+          <p class="mt-3 text-xs text-[var(--text-dim)]">The interviewer — and any recording — sees nothing.</p>
         </div>
       </div>
 
-      <!-- Stealth Key Pillars Grid -->
-      <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/10">
-          <i data-lucide="cpu" class="w-5 h-5 text-indigo-400 mb-2"></i>
-          <h4 class="text-sm font-semibold text-white">No Meeting Bot Joins</h4>
-          <p class="mt-1 text-xs text-zinc-400">Unlike Otter or Fireflies, no third-party bot enters the call room. Zero participant alerts.</p>
+      <div class="reveal mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="card p-5">
+          <i data-lucide="shield-check" class="mb-2 h-5 w-5 text-accent"></i>
+          <h4 class="text-sm font-semibold text-white">Compositor-level exclusion</h4>
+          <p class="mt-1 text-xs text-[var(--text-dim)]"><span class="font-mono">SetWindowDisplayAffinity(WDA_EXCLUDEFROMCAPTURE)</span> on Windows; the private-window API on macOS.</p>
         </div>
-        <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/10">
-          <i data-lucide="lock" class="w-5 h-5 text-indigo-400 mb-2"></i>
-          <h4 class="text-sm font-semibold text-white">WASAPI Loopback Capture</h4>
-          <p class="mt-1 text-xs text-zinc-400">Captures incoming interviewer audio directly from the soundcard without virtual cable drivers.</p>
+        <div class="card p-5">
+          <i data-lucide="users-round" class="mb-2 h-5 w-5 text-accent"></i>
+          <h4 class="text-sm font-semibold text-white">No bot in the call</h4>
+          <p class="mt-1 text-xs text-[var(--text-dim)]">Nothing joins the meeting, so there's no participant, no "is recording" banner, no trace in the roster.</p>
         </div>
-        <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/10">
-          <i data-lucide="key" class="w-5 h-5 text-indigo-400 mb-2"></i>
-          <h4 class="text-sm font-semibold text-white">BYOK & Local Models</h4>
-          <p class="mt-1 text-xs text-zinc-400">Bring your own Groq / Claude API key or run local Ollama offline. Zero data retention.</p>
+        <div class="card p-5">
+          <i data-lucide="audio-lines" class="mb-2 h-5 w-5 text-accent"></i>
+          <h4 class="text-sm font-semibold text-white">Loopback audio capture</h4>
+          <p class="mt-1 text-xs text-[var(--text-dim)]">Reads the interviewer's voice straight off your sound output via WASAPI loopback — no virtual cables.</p>
         </div>
       </div>
     </section>
 
-    <!-- CORE FEATURES BENTO GRID -->
-    <section id="features" class="max-w-5xl mx-auto px-5 sm:px-8 mt-28 sm:mt-36">
-      <div class="text-center max-w-2xl mx-auto">
-        <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-500/30">Superpowers</span>
-        <h2 class="font-serif text-4xl sm:text-5xl font-normal text-white mt-4 tracking-[-0.02em]">
-          Engineered for Senior Engineers & Leaders.
-        </h2>
+    <!-- ================= FEATURES ================= -->
+    <section id="features" class="mx-auto max-w-5xl px-5 pt-32 sm:px-8">
+      <div class="reveal text-center">
+        <span class="font-mono text-xs font-medium uppercase tracking-widest text-accent">Everything it does</span>
+        <h2 class="mt-3 text-3xl font-bold tracking-[-0.02em] text-white sm:text-[40px]">Built for the moment you freeze.</h2>
       </div>
 
-      <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Feature 1: Sub-300ms Intelligence -->
-        <div class="md:col-span-2 rounded-2xl p-7 bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 flex flex-col justify-between">
-          <div>
-            <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center mb-4">
-              <i data-lucide="zap" class="w-5 h-5 text-indigo-400"></i>
-            </div>
-            <h3 class="text-lg font-semibold text-white">Sub-300ms Groq & Claude 3.5 Sonnet Streaming</h3>
-            <p class="mt-2 text-sm text-zinc-400 leading-relaxed">
-              Powered by Groq LPUs delivering 800+ tokens per second. Answers stream faster than normal human reading speed, giving you the edge the instant a question finishes.
-            </p>
-          </div>
-          <div class="mt-6 p-3 rounded-xl bg-black/40 border border-white/5 font-mono text-xs text-emerald-400 flex items-center justify-between">
-            <span>Groq Llama-3.3-70B</span>
-            <span>⚡ 195ms p90 latency</span>
-          </div>
-        </div>
-
-        <!-- Feature 2: STAR Behavioral Framework -->
-        <div class="rounded-2xl p-7 bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 flex flex-col justify-between">
-          <div>
-            <div class="w-10 h-10 rounded-xl bg-amber-600/20 border border-amber-500/30 flex items-center justify-center mb-4">
-              <i data-lucide="check-circle-2" class="w-5 h-5 text-amber-400"></i>
-            </div>
-            <h3 class="text-lg font-semibold text-white">Automatic STAR Story Generator</h3>
-            <p class="mt-2 text-sm text-zinc-400 leading-relaxed">
-              Detects leadership and conflict questions and instantly formats your answers into Situation, Task, Action, and Measurable Result.
-            </p>
-          </div>
-          <div class="mt-6 flex gap-1 text-[10px] font-mono">
-            <span class="px-2 py-1 rounded bg-amber-950 text-amber-300">S</span>
-            <span class="px-2 py-1 rounded bg-amber-950 text-amber-300">T</span>
-            <span class="px-2 py-1 rounded bg-emerald-950 text-emerald-300">A</span>
-            <span class="px-2 py-1 rounded bg-emerald-950 text-emerald-300">R</span>
+      <div class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3">
+        <!-- live models — the headline feature -->
+        <div class="reveal card p-7 md:col-span-2">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="refresh-cw" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Live model discovery — never a dead model</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            WhisperAI pulls the <em>current</em> model list straight from Groq, OpenAI, Anthropic,
+            OpenRouter or your local Ollama every time you open Settings, picks a fast default, and
+            if a provider retires a model mid-use it re-fetches, swaps in a working one and retries
+            the request. No hard-coded names to rot.
+          </p>
+          <div class="mt-5 flex flex-wrap gap-1.5 font-mono text-[11px]">
+            <span class="rounded border border-[var(--line)] bg-black/40 px-2 py-1 text-[var(--text-dim)]">GET /v1/models</span>
+            <span class="rounded border border-[var(--line)] bg-black/40 px-2 py-1 text-[var(--text-dim)]">auto-pick fastest</span>
+            <span class="rounded border border-[var(--line)] bg-black/40 px-2 py-1 text-[var(--text-dim)]">self-heal on 404</span>
           </div>
         </div>
 
-        <!-- Feature 3: Resume Context RAG -->
-        <div class="rounded-2xl p-7 bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 flex flex-col justify-between">
-          <div>
-            <div class="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center mb-4">
-              <i data-lucide="file-text" class="w-5 h-5 text-purple-400"></i>
-            </div>
-            <h3 class="text-lg font-semibold text-white">Personal Resume Context</h3>
-            <p class="mt-2 text-sm text-zinc-400 leading-relaxed">
-              Inject your real background and past projects. Every answer references your actual tech stack and engineering victories.
-            </p>
-          </div>
-          <div class="mt-6 text-xs text-indigo-300 font-mono">
-            ⚡ Context-Aware Answers
+        <div class="reveal card p-7" data-d="1">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="zap" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Streaming answers</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            A one-line headline you can speak immediately lands first, then the talking points, then
+            code with Big-O — token by token.
+          </p>
+        </div>
+
+        <div class="reveal card p-7">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="ear" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Auto question detection</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            Live speech recognition transcribes the room; a short silence after a question mark or
+            question phrase fires an answer on its own.
+          </p>
+        </div>
+
+        <div class="reveal card p-7" data-d="1">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="git-branch" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Intent-aware output</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            Behavioral → a STAR story. Coding → a clean solution with complexity. System design and
+            technical questions get the shape they need.
+          </p>
+        </div>
+
+        <div class="reveal card p-7" data-d="2">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="wand-sparkles" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">One-tap prompts</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            <span class="text-[var(--text)]">Answer this</span>, <span class="text-[var(--text)]">What do I say?</span>,
+            <span class="text-[var(--text)]">Follow-up</span> and <span class="text-[var(--text)]">Recap</span> —
+            each carries the last question heard as context.
+          </p>
+        </div>
+
+        <div class="reveal card p-7 md:col-span-2">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="mouse-pointer-click" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Click-through mode</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            Press <kbd class="rounded bg-white/10 px-1.5 py-0.5 font-mono text-xs text-white">Ctrl+Shift+T</kbd> and the
+            overlay stops catching the mouse — type in your editor, run tests in the terminal, and read the
+            answer through it without moving a thing.
+          </p>
+          <div class="mt-5 flex flex-wrap items-center gap-3 font-mono text-xs text-[var(--ok)]">
+            <span>✓ type in VS Code</span><span>✓ run the test suite</span><span>✓ answer stays on top</span>
           </div>
         </div>
 
-        <!-- Feature 4: Click-Through Mode -->
-        <div class="md:col-span-2 rounded-2xl p-7 bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 flex flex-col justify-between">
-          <div>
-            <div class="w-10 h-10 rounded-xl bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center mb-4">
-              <i data-lucide="mouse-pointer" class="w-5 h-5 text-cyan-400"></i>
-            </div>
-            <h3 class="text-lg font-semibold text-white">Transparent Click-Through (`WS_EX_TRANSPARENT`)</h3>
-            <p class="mt-2 text-sm text-zinc-400 leading-relaxed">
-              Press <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white font-mono text-xs">Ctrl+Shift+T</kbd> to lock the HUD into pass-through mode. Mouse clicks pass directly through the overlay into your IDE or browser without moving the window.
-            </p>
-          </div>
-          <div class="mt-6 flex items-center gap-3 text-xs text-zinc-400 font-mono">
-            <span class="text-emerald-400">✓ Type in VS Code</span>
-            <span class="text-emerald-400">✓ Run tests in terminal</span>
-            <span class="text-emerald-400">✓ Read answer overlay simultaneously</span>
-          </div>
+        <div class="reveal card p-7">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="file-user" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Your résumé, in context</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            Paste your background once. Every answer is phrased around your real stack, projects and metrics.
+          </p>
+        </div>
+
+        <div class="reveal card p-7" data-d="1">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="key-round" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Your key, your machine</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            Bring your own key — stored in the OS keychain, never written to disk — or run fully offline
+            against local Ollama. Requests go straight from your machine to the model.
+          </p>
+        </div>
+
+        <div class="reveal card p-7" data-d="2">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="keyboard" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Global hotkeys</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            Hide/show, collapse to a bar, toggle click-through and emergency-quit — all from the keyboard,
+            even when another app is focused.
+          </p>
+        </div>
+
+        <div class="reveal card p-7">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="sliders-horizontal" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Dim it, shrink it</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            Adjustable opacity and a one-key collapse to just the top bar — the rest of the window goes
+            fully transparent.
+          </p>
+        </div>
+
+        <div class="reveal card p-7" data-d="1">
+          <div class="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent/15"><i data-lucide="languages" class="h-5 w-5 text-accent"></i></div>
+          <h3 class="text-lg font-semibold text-white">Seven speech languages</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--text-dim)]">
+            English (US / UK / India), Spanish, French, German and Hindi recognition out of the box.
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- COMPETITOR COMPARISON TABLE -->
-    <section id="comparison" class="max-w-5xl mx-auto px-5 sm:px-8 mt-28 sm:mt-36">
-      <div class="text-center max-w-2xl mx-auto">
-        <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-500/30">Competitive Matrix</span>
-        <h2 class="font-serif text-4xl sm:text-5xl font-normal text-white mt-4 tracking-[-0.02em]">
-          How WhisperAI Compares
-        </h2>
+    <!-- ================= MODELS ================= -->
+    <section id="models" class="mx-auto max-w-5xl px-5 pt-32 sm:px-8">
+      <div class="reveal text-center">
+        <span class="font-mono text-xs font-medium uppercase tracking-widest text-accent">Bring your own</span>
+        <h2 class="mt-3 text-3xl font-bold tracking-[-0.02em] text-white sm:text-[40px]">Any provider. Any model. Live.</h2>
+        <p class="mx-auto mt-3 max-w-xl text-sm text-[var(--text-dim)]">
+          Pick a provider, paste a key, and the model dropdown fills itself from that provider's API.
+        </p>
       </div>
 
-      <div class="mt-12 overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+      <div class="reveal mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="card p-5">
+          <div class="flex items-center justify-between"><h4 class="text-sm font-semibold text-white">Groq</h4><span class="font-mono text-[10px] text-[var(--ok)]">fastest</span></div>
+          <p class="mt-1.5 text-xs text-[var(--text-dim)]">LPU inference, generous free tier. Great default for real-time.</p>
+        </div>
+        <div class="card p-5">
+          <div class="flex items-center justify-between"><h4 class="text-sm font-semibold text-white">OpenRouter</h4><span class="font-mono text-[10px] text-[var(--text-faint)]">400+ models</span></div>
+          <p class="mt-1.5 text-xs text-[var(--text-dim)]">One key, every model — including free tiers. List is fetched live.</p>
+        </div>
+        <div class="card p-5">
+          <div class="flex items-center justify-between"><h4 class="text-sm font-semibold text-white">Anthropic</h4><span class="font-mono text-[10px] text-[var(--text-faint)]">Claude</span></div>
+          <p class="mt-1.5 text-xs text-[var(--text-dim)]">Best reasoning for gnarly system-design and trade-off questions.</p>
+        </div>
+        <div class="card p-5">
+          <div class="flex items-center justify-between"><h4 class="text-sm font-semibold text-white">OpenAI</h4><span class="font-mono text-[10px] text-[var(--text-faint)]">GPT</span></div>
+          <p class="mt-1.5 text-xs text-[var(--text-dim)]">Familiar quality, JSON-mode streaming.</p>
+        </div>
+        <div class="card p-5">
+          <div class="flex items-center justify-between"><h4 class="text-sm font-semibold text-white">Local · Ollama</h4><span class="font-mono text-[10px] text-[var(--ok)]">offline</span></div>
+          <p class="mt-1.5 text-xs text-[var(--text-dim)]">Nothing leaves your machine. Point it at <span class="font-mono">localhost:11434</span>.</p>
+        </div>
+        <div class="card grid place-items-center p-5 text-center">
+          <p class="text-xs text-[var(--text-dim)]">…and the moment a provider ships a new model, it's in your dropdown. No update required.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section class="mx-auto max-w-5xl px-5 pt-32 sm:px-8">
+      <div class="reveal grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div class="card p-6">
+          <span class="font-mono text-xs text-accent">01</span>
+          <h4 class="mt-2 text-base font-semibold text-white">Pick a provider, paste a key</h4>
+          <p class="mt-1.5 text-sm text-[var(--text-dim)]">Or start a local Ollama. The model list loads itself and a fast default is chosen.</p>
+        </div>
+        <div class="card p-6">
+          <span class="font-mono text-xs text-accent">02</span>
+          <h4 class="mt-2 text-base font-semibold text-white">Hit Listen — or just type</h4>
+          <p class="mt-1.5 text-sm text-[var(--text-dim)]">It transcribes the call and answers detected questions automatically, or ask it anything yourself.</p>
+        </div>
+        <div class="card p-6">
+          <span class="font-mono text-xs text-accent">03</span>
+          <h4 class="mt-2 text-base font-semibold text-white">Read it. They can't.</h4>
+          <p class="mt-1.5 text-sm text-[var(--text-dim)]">The overlay floats on top for you and is absent from every frame the call captures.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= COMPARISON ================= -->
+    <section class="mx-auto max-w-5xl px-5 pt-32 sm:px-8">
+      <div class="reveal text-center">
+        <span class="font-mono text-xs font-medium uppercase tracking-widest text-accent">Where it stands</span>
+        <h2 class="mt-3 text-3xl font-bold tracking-[-0.02em] text-white sm:text-[40px]">How WhisperAI compares</h2>
+      </div>
+      <div class="reveal mt-10 overflow-x-auto">
+        <table class="w-full border-collapse text-left text-xs sm:text-sm">
           <thead>
-            <tr class="border-b border-white/10 text-zinc-400 font-medium">
-              <th class="py-4 px-4">Feature</th>
-              <th class="py-4 px-4 text-indigo-400 font-bold bg-indigo-950/30 rounded-t-xl">WhisperAI</th>
-              <th class="py-4 px-4">Cluely</th>
-              <th class="py-4 px-4">Otter.ai</th>
-              <th class="py-4 px-4">Granola</th>
+            <tr class="border-b border-[var(--line)] text-[var(--text-faint)]">
+              <th class="px-4 py-4 font-medium">Capability</th>
+              <th class="rounded-t-xl bg-accent/10 px-4 py-4 font-bold text-accent">WhisperAI</th>
+              <th class="px-4 py-4 font-medium">Cluely</th>
+              <th class="px-4 py-4 font-medium">Otter.ai</th>
+              <th class="px-4 py-4 font-medium">Granola</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-white/5 text-zinc-300">
+          <tbody class="divide-y divide-[var(--line)] text-[var(--text-dim)]">
             <tr>
-              <td class="py-3.5 px-4 font-medium text-white">Screen-Share Undetectable</td>
-              <td class="py-3.5 px-4 text-emerald-400 font-semibold bg-indigo-950/20">✓ Yes (DWM Kernel Exclusion)</td>
-              <td class="py-3.5 px-4 text-amber-400">Partial</td>
-              <td class="py-3.5 px-4 text-rose-400">✗ No (Bot joins)</td>
-              <td class="py-3.5 px-4 text-rose-400">✗ No (Post-call only)</td>
+              <td class="px-4 py-3.5 font-medium text-white">Absent from screen share</td>
+              <td class="bg-accent/[0.06] px-4 py-3.5 font-semibold text-[var(--ok)]">Yes — compositor exclusion</td>
+              <td class="px-4 py-3.5">Partial</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No — bot joins</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No — post-call</td>
             </tr>
             <tr>
-              <td class="py-3.5 px-4 font-medium text-white">Live Answer Latency</td>
-              <td class="py-3.5 px-4 text-emerald-400 font-bold bg-indigo-950/20"><300ms (Groq LPU)</td>
-              <td class="py-3.5 px-4">1200ms - 2500ms</td>
-              <td class="py-3.5 px-4">N/A (No live copilot)</td>
-              <td class="py-3.5 px-4">N/A</td>
+              <td class="px-4 py-3.5 font-medium text-white">Bring your own model</td>
+              <td class="bg-accent/[0.06] px-4 py-3.5 font-semibold text-[var(--ok)]">5 providers + local, live list</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">Fixed</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">Fixed</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">Fixed</td>
             </tr>
             <tr>
-              <td class="py-3.5 px-4 font-medium text-white">No Bot Joining Meeting</td>
-              <td class="py-3.5 px-4 text-emerald-400 font-semibold bg-indigo-950/20">✓ 100% Local WASAPI</td>
-              <td class="py-3.5 px-4 text-emerald-400">✓ Yes</td>
-              <td class="py-3.5 px-4 text-rose-400">✗ Visible Bot Alert</td>
-              <td class="py-3.5 px-4 text-emerald-400">✓ Yes</td>
+              <td class="px-4 py-3.5 font-medium text-white">Runs fully offline</td>
+              <td class="bg-accent/[0.06] px-4 py-3.5 font-semibold text-[var(--ok)]">Yes — local Ollama</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No</td>
             </tr>
             <tr>
-              <td class="py-3.5 px-4 font-medium text-white">Algorithm & Code Generation</td>
-              <td class="py-3.5 px-4 text-emerald-400 font-semibold bg-indigo-950/20">✓ O(1) syntax-highlighted</td>
-              <td class="py-3.5 px-4 text-amber-400">Text only</td>
-              <td class="py-3.5 px-4 text-rose-400">✗ No</td>
-              <td class="py-3.5 px-4 text-rose-400">✗ No</td>
+              <td class="px-4 py-3.5 font-medium text-white">Code with complexity</td>
+              <td class="bg-accent/[0.06] px-4 py-3.5 font-semibold text-[var(--ok)]">Yes</td>
+              <td class="px-4 py-3.5">Text only</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No</td>
             </tr>
             <tr>
-              <td class="py-3.5 px-4 font-medium text-white">Click-Through Lock (`WS_EX_TRANSPARENT`)</td>
-              <td class="py-3.5 px-4 text-emerald-400 font-semibold bg-indigo-950/20">✓ Yes (Ctrl+Shift+T)</td>
-              <td class="py-3.5 px-4 text-rose-400">✗ No</td>
-              <td class="py-3.5 px-4 text-rose-400">✗ No</td>
-              <td class="py-3.5 px-4 text-rose-400">✗ No</td>
+              <td class="px-4 py-3.5 font-medium text-white">Click-through overlay</td>
+              <td class="bg-accent/[0.06] px-4 py-3.5 font-semibold text-[var(--ok)]">Yes — Ctrl+Shift+T</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">No</td>
             </tr>
             <tr>
-              <td class="py-3.5 px-4 font-medium text-white">BYOK (Bring Your Own Key) / Privacy</td>
-              <td class="py-3.5 px-4 text-emerald-400 font-semibold bg-indigo-950/20">✓ Zero Data Stored</td>
-              <td class="py-3.5 px-4 text-rose-400">Cloud Account Required</td>
-              <td class="py-3.5 px-4 text-rose-400">Cloud Stored</td>
-              <td class="py-3.5 px-4 text-rose-400">Cloud Stored</td>
+              <td class="px-4 py-3.5 font-medium text-white">Data retention</td>
+              <td class="bg-accent/[0.06] px-4 py-3.5 font-semibold text-[var(--ok)]">None — key in keychain</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">Account required</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">Cloud stored</td>
+              <td class="px-4 py-3.5 text-[var(--danger)]">Cloud stored</td>
             </tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- FAQ ACCORDION -->
-    <section id="faq" class="max-w-3xl mx-auto px-5 sm:px-8 mt-28 sm:mt-36">
-      <div class="text-center">
-        <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-500/30">Clarifications</span>
-        <h2 class="font-serif text-4xl font-normal text-white mt-4 tracking-[-0.02em]">
-          Frequently Asked Questions
-        </h2>
+    <!-- ================= FAQ ================= -->
+    <section id="faq" class="mx-auto max-w-3xl px-5 pt-32 sm:px-8">
+      <div class="reveal text-center">
+        <span class="font-mono text-xs font-medium uppercase tracking-widest text-accent">Details</span>
+        <h2 class="mt-3 text-3xl font-bold tracking-[-0.02em] text-white sm:text-[40px]">Questions</h2>
       </div>
-
-      <div class="mt-12 space-y-4" id="faqAccordion">
-        <!-- Q1 -->
-        <div class="faq-item rounded-2xl border border-white/10 bg-white/[0.02] p-5 cursor-pointer">
-          <div class="flex items-center justify-between">
-            <h4 class="text-sm sm:text-base font-semibold text-white">How does WhisperAI stay completely hidden during screen shares?</h4>
-            <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-zinc-400 transition-transform"></i>
+      <div class="reveal mt-10 space-y-3" id="faq">
+        <div class="faq card cursor-pointer p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h4 class="text-sm font-semibold text-white sm:text-base">How is it hidden during a screen share?</h4>
+            <i data-lucide="chevron-down" class="faq-chev h-4 w-4 shrink-0 text-[var(--text-faint)] transition-transform"></i>
           </div>
-          <div class="faq-answer hidden mt-3 text-xs sm:text-sm text-zinc-400 leading-relaxed border-t border-white/5 pt-3">
-            WhisperAI utilizes the Windows API <code class="text-indigo-300 font-mono">SetWindowDisplayAffinity(hwnd, WDA_EXCLUDEFROMCAPTURE)</code>. This signals the Windows Desktop Window Manager (DWM) composition engine to exclude the WhisperAI window from all desktop capture streams, including Zoom, Microsoft Teams, Google Meet, and OBS Studio.
-          </div>
+          <div class="faq-a"><div><p class="mt-3 border-t border-[var(--line)] pt-3 text-xs leading-relaxed text-[var(--text-dim)] sm:text-sm">
+            On Windows the window calls <span class="font-mono text-accent">SetWindowDisplayAffinity(hwnd, WDA_EXCLUDEFROMCAPTURE)</span>,
+            which tells the Desktop Window Manager to leave it out of every capture stream — Zoom, Meet, Teams, OBS,
+            Windows Game Bar, all of them. macOS uses the equivalent private-window flag.
+          </p></div></div>
         </div>
-
-        <!-- Q2 -->
-        <div class="faq-item rounded-2xl border border-white/10 bg-white/[0.02] p-5 cursor-pointer">
-          <div class="flex items-center justify-between">
-            <h4 class="text-sm sm:text-base font-semibold text-white">How does audio capture work without a bot?</h4>
-            <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-zinc-400 transition-transform"></i>
+        <div class="faq card cursor-pointer p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h4 class="text-sm font-semibold text-white sm:text-base">How does it hear the interviewer with no bot?</h4>
+            <i data-lucide="chevron-down" class="faq-chev h-4 w-4 shrink-0 text-[var(--text-faint)] transition-transform"></i>
           </div>
-          <div class="faq-answer hidden mt-3 text-xs sm:text-sm text-zinc-400 leading-relaxed border-t border-white/5 pt-3">
-            WhisperAI leverages native Windows WASAPI Loopback capture to read audio directly from your default audio output device (what you hear through your headphones/speakers) in parallel with your local microphone. No audio routing drivers or virtual bots are ever needed.
-          </div>
+          <div class="faq-a"><div><p class="mt-3 border-t border-[var(--line)] pt-3 text-xs leading-relaxed text-[var(--text-dim)] sm:text-sm">
+            WASAPI loopback capture reads whatever is playing out of your speakers or headphones, alongside your mic.
+            No virtual audio cable, no bot in the meeting, no "recording" indicator.
+          </p></div></div>
         </div>
-
-        <!-- Q3 -->
-        <div class="faq-item rounded-2xl border border-white/10 bg-white/[0.02] p-5 cursor-pointer">
-          <div class="flex items-center justify-between">
-            <h4 class="text-sm sm:text-base font-semibold text-white">What platforms are supported?</h4>
-            <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-zinc-400 transition-transform"></i>
+        <div class="faq card cursor-pointer p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h4 class="text-sm font-semibold text-white sm:text-base">Which models can I use? Do I need a subscription?</h4>
+            <i data-lucide="chevron-down" class="faq-chev h-4 w-4 shrink-0 text-[var(--text-faint)] transition-transform"></i>
           </div>
-          <div class="faq-answer hidden mt-3 text-xs sm:text-sm text-zinc-400 leading-relaxed border-t border-white/5 pt-3">
-            The Windows desktop application (Windows 10 & 11 64-bit) is the primary focus and available today. macOS, Android, and iOS companion applications are next on our roadmap following the Windows release.
-          </div>
+          <div class="faq-a"><div><p class="mt-3 border-t border-[var(--line)] pt-3 text-xs leading-relaxed text-[var(--text-dim)] sm:text-sm">
+            No WhisperAI subscription. Bring a key for Groq, OpenAI, Anthropic or OpenRouter (all have free tiers),
+            or run a local model with Ollama. The app fetches each provider's live model list, so new models appear
+            automatically and retired ones are swapped out for you.
+          </p></div></div>
         </div>
-
-        <!-- Q4 -->
-        <div class="faq-item rounded-2xl border border-white/10 bg-white/[0.02] p-5 cursor-pointer">
-          <div class="flex items-center justify-between">
-            <h4 class="text-sm sm:text-base font-semibold text-white">Are my questions or conversations logged?</h4>
-            <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-zinc-400 transition-transform"></i>
+        <div class="faq card cursor-pointer p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h4 class="text-sm font-semibold text-white sm:text-base">Is anything I say or ask stored?</h4>
+            <i data-lucide="chevron-down" class="faq-chev h-4 w-4 shrink-0 text-[var(--text-faint)] transition-transform"></i>
           </div>
-          <div class="faq-answer hidden mt-3 text-xs sm:text-sm text-zinc-400 leading-relaxed border-t border-white/5 pt-3">
-            No. WhisperAI follows a strict zero-retention policy. You provide your own API key (Groq, Anthropic, OpenAI) or connect to a local Ollama instance on <code class="text-indigo-300 font-mono">localhost:11434</code>. Requests flow directly between your machine and your chosen LLM endpoint.
+          <div class="faq-a"><div><p class="mt-3 border-t border-[var(--line)] pt-3 text-xs leading-relaxed text-[var(--text-dim)] sm:text-sm">
+            No. There's no WhisperAI account and no server in the loop. Your key lives in the OS keychain, settings
+            live in local storage, and prompts go straight from your machine to the model endpoint you chose.
+          </p></div></div>
+        </div>
+        <div class="faq card cursor-pointer p-5">
+          <div class="flex items-center justify-between gap-3">
+            <h4 class="text-sm font-semibold text-white sm:text-base">Which platforms are supported?</h4>
+            <i data-lucide="chevron-down" class="faq-chev h-4 w-4 shrink-0 text-[var(--text-faint)] transition-transform"></i>
           </div>
+          <div class="faq-a"><div><p class="mt-3 border-t border-[var(--line)] pt-3 text-xs leading-relaxed text-[var(--text-dim)] sm:text-sm">
+            Windows 10 & 11 (64-bit) is the primary target and is ready now. A macOS stealth build ships alongside it;
+            the capture-exclusion path is implemented for both.
+          </p></div></div>
         </div>
       </div>
     </section>
 
-    <!-- DOWNLOAD / FINAL CTA -->
-    <section id="download" class="max-w-5xl mx-auto px-5 sm:px-8 mt-28 sm:mt-36 mb-24">
-      <div class="rounded-3xl p-8 sm:p-14 bg-gradient-to-b from-indigo-950/60 via-[#101322] to-[#0A0C14] border border-indigo-500/30 text-center relative overflow-hidden shadow-2xl">
-        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none"></div>
-        
-        <div class="relative z-10 max-w-2xl mx-auto">
-          <h2 class="font-serif text-4xl sm:text-6xl font-normal text-white tracking-[-0.03em]">
-            Ace Your Next Interview in Complete Stealth.
+    <!-- ================= DOWNLOAD ================= -->
+    <section id="download" class="mx-auto max-w-5xl px-5 pb-28 pt-32 sm:px-8">
+      <div class="reveal relative overflow-hidden rounded-3xl border border-[var(--line-strong)] bg-gradient-to-b from-accent/[0.12] via-panel to-ink p-8 text-center sm:p-16">
+        <div class="pointer-events-none absolute -top-24 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-accent/25 blur-[100px]"></div>
+        <div class="relative z-10 mx-auto max-w-2xl">
+          <h2 class="text-3xl font-extrabold tracking-[-0.03em] text-white sm:text-[52px]">
+            Walk in with backup.
           </h2>
-          <p class="mt-4 text-zinc-300 text-sm sm:text-base leading-relaxed">
-            Download WhisperAI for Windows. Zero configuration required, instant setup with Groq or Claude 3.5 Sonnet.
+          <p class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[var(--text-dim)] sm:text-base">
+            Free, open, no account. Download it, paste a key, and the next hard question isn't yours to carry alone.
           </p>
-
-          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.03] active:scale-[0.98]">
-              <i data-lucide="download" class="w-4 h-4"></i>
-              <span>Download WhisperAI for Windows (v1.2.0)</span>
+          <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a href="#" class="cta-shine flex w-full items-center justify-center gap-2.5 rounded-xl bg-accent px-8 py-4 text-sm font-bold text-[var(--accent-ink)] transition-transform hover:scale-[1.03] sm:w-auto">
+              <i data-lucide="monitor-down" class="h-4 w-4"></i> Download for Windows
+            </a>
+            <a href="#" class="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-white/[0.04] px-6 py-4 text-sm font-medium text-[var(--text)] transition-colors hover:bg-white/[0.08] sm:w-auto">
+              <i data-lucide="apple" class="h-4 w-4"></i> macOS build
             </a>
           </div>
-
-          <div class="mt-5 flex items-center justify-center gap-4 text-xs text-zinc-400 font-mono">
-            <span>SHA-256 Verified</span>
-            <span>•</span>
-            <span>Windows 10 / 11 64-bit</span>
-            <span>•</span>
-            <span>Tauri v2 Native</span>
-          </div>
+          <p class="mt-5 font-mono text-[11px] text-[var(--text-faint)]">SHA-256 verified · Windows 10 / 11 64-bit · ~9 MB</p>
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- FOOTER -->
-  <footer class="border-t border-white/[0.06] bg-[#06070A] py-10 text-xs text-zinc-500">
-    <div class="max-w-6xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t border-[var(--line)] bg-[#060608] py-10">
+    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 text-xs text-[var(--text-faint)] sm:flex-row sm:px-8">
       <div class="flex items-center gap-2">
-        <i data-lucide="shield-check" class="w-4 h-4 text-indigo-400"></i>
-        <span class="font-semibold text-zinc-300">WhisperAI</span>
-        <span>— Real-time Undetectable Technical Copilot</span>
+        <i data-lucide="scan-eye" class="h-4 w-4 text-accent"></i>
+        <span class="font-semibold text-[var(--text-dim)]">WhisperAI</span>
+        <span>— the invisible interview copilot</span>
       </div>
-      <div class="flex items-center gap-6 text-zinc-400">
-        <a href="#demo" class="hover:text-white transition-colors">Demo</a>
-        <a href="#undetectable" class="hover:text-white transition-colors">Security & Undetectability</a>
-        <a href="#features" class="hover:text-white transition-colors">Features</a>
-        <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+      <div class="flex items-center gap-6 text-[var(--text-dim)]">
+        <a href="#demo" class="transition-colors hover:text-white">Demo</a>
+        <a href="#stealth" class="transition-colors hover:text-white">Stealth</a>
+        <a href="#features" class="transition-colors hover:text-white">Features</a>
+        <a href="#faq" class="transition-colors hover:text-white">FAQ</a>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="./app.js"></script>
 </body>
 </html>
