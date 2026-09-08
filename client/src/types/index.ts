@@ -35,6 +35,9 @@ export interface AppSettings {
   model: string;
   /** Base URL for a local OpenAI-compatible / Ollama server. */
   localModelUrl: string;
+  /** Optional OpenAI key used only for Listen's transcription, when the main
+   *  provider can't run Whisper. Stored alongside the main key in the keychain. */
+  transcriptionKey: string;
   resumeContext: string;
   speechLanguage: string;
   opacity: number;
@@ -45,6 +48,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   apiKey: '',
   model: '',
   localModelUrl: 'http://localhost:11434',
+  transcriptionKey: '',
   resumeContext: '',
   speechLanguage: 'en-US',
   opacity: 1,

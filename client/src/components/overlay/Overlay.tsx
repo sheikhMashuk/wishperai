@@ -253,6 +253,7 @@ export function Overlay() {
       provider: settings.provider,
       apiKey: settings.apiKey,
       language: settings.speechLanguage,
+      transcriptionKey: settings.transcriptionKey,
     });
     if (!res.ok) {
       setListenError(res.reason ?? 'Could not start listening.');

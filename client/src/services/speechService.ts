@@ -9,6 +9,9 @@ export interface ListenOptions {
   provider: string;
   apiKey: string;
   language: string; // e.g. "en-US"
+  /** Optional OpenAI key used only for transcription — for when the main
+   *  provider can't do Whisper (e.g. a Groq org that blocks the audio models). */
+  transcriptionKey?: string;
 }
 
 export interface ListenResult {
@@ -52,18 +55,30 @@ const HALLUCINATIONS = new Set([
 ]);
 
 /** Tried in order; whichever the account can actually use is kept. */
-function transcriptionTarget(provider: string, key: string, langIsEnglish: boolean) {
+function transcriptionTarget(provider: string, key: string, transcriptionKey?: string) {
+  // an explicit transcription key always means OpenAI Whisper
+  if (transcriptionKey && transcriptionKey.trim()) {
+    return {
+      url: 'https://api.openai.com/v1/audio/transcriptions',
+      models: ['whisper-1', 'gpt-4o-mini-transcribe'],
+      key: transcriptionKey.trim(),
+      openai: true,
+    };
+  }
   if (provider === 'openai') {
     return {
       url: 'https://api.openai.com/v1/audio/transcriptions',
-      models: ['gpt-4o-mini-transcribe', 'whisper-1'],
+      models: ['whisper-1', 'gpt-4o-mini-transcribe'],
       key,
+      openai: true,
     };
   }
-  // large-v3 is enabled for every Groq account; turbo is faster but some orgs block it.
-  const groq = ['whisper-large-v3', 'whisper-large-v3-turbo'];
-  if (langIsEnglish) groq.push('distil-whisper-large-v3-en');
-  return { url: 'https://api.groq.com/openai/v1/audio/transcriptions', models: groq, key };
+  return {
+    url: 'https://api.groq.com/openai/v1/audio/transcriptions',
+    models: ['whisper-large-v3', 'whisper-large-v3-turbo'],
+    key,
+    openai: false,
+  };
 }
 
 /** A 4xx that means "this model, not this request" — move to the next model. */
@@ -117,15 +132,20 @@ class MeetingListener {
     if (!IN_TAURI) {
       return { ok: false, reason: 'Listening only works in the desktop app.' };
     }
-    if (opts.provider !== 'groq' && opts.provider !== 'openai') {
-      return { ok: false, reason: 'Listening needs a Groq or OpenAI key for transcription. Type the question instead.' };
+    const tKey = opts.transcriptionKey?.trim();
+    const canGroqOrOpenAI = opts.provider === 'groq' || opts.provider === 'openai';
+    if (!tKey && !canGroqOrOpenAI) {
+      return {
+        ok: false,
+        reason: 'Listening needs Whisper. Use a Groq/OpenAI provider, or paste an OpenAI transcription key in Settings.',
+      };
     }
-    if (!opts.apiKey.trim()) {
+    if (!tKey && !opts.apiKey.trim()) {
       return { ok: false, reason: 'Add your API key in Settings first.' };
     }
 
     this.setLanguage(opts.language);
-    this.target = transcriptionTarget(opts.provider, opts.apiKey.trim(), this.language === 'en');
+    this.target = transcriptionTarget(opts.provider, opts.apiKey.trim(), tKey);
     this.modelIdx = 0;
     this.accumulated = '';
     this.silentTicks = 0;
@@ -226,13 +246,18 @@ class MeetingListener {
       }
 
       const body = (await res.text().catch(() => '')).slice(0, 220);
-      if (isModelBlocked(res.status, body) && this.modelIdx < t.models.length - 1) {
-        console.warn(`transcription model "${model}" unavailable, trying next`);
-        continue;
+      if (isModelBlocked(res.status, body)) {
+        console.warn(`transcription model "${model}" unavailable: ${body}`);
+        if (this.modelIdx < t.models.length - 1) continue;
+        throw new Error(
+          t.openai
+            ? `your OpenAI key can't use Whisper (${res.status})`
+            : `your Groq account can't use any Whisper model — paste an OpenAI key under "transcription key" in Settings`,
+        );
       }
       throw new Error(`${res.status} ${res.statusText}${body ? ` — ${body}` : ''}`);
     }
-    throw new Error('no usable transcription model for this account');
+    throw new Error('no usable transcription model');
   }
 
   private ingest(raw: string) {

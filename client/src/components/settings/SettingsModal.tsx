@@ -223,6 +223,22 @@ export function SettingsModal({ settings, onChange, onClose }: Props) {
             </p>
           </div>
 
+          {/* transcription key */}
+          <div>
+            <span className={label}>Transcription key (optional)</span>
+            <input
+              type="password"
+              className={field}
+              value={settings.transcriptionKey}
+              onChange={(e) => onChange({ transcriptionKey: e.target.value })}
+              placeholder="sk-… (OpenAI)"
+            />
+            <p className="mt-1 text-[10.5px] text-[var(--text-faint)]">
+              Only for <b>Listen</b>. Use this if your main provider can't run Whisper — e.g. a Groq account
+              with the audio models blocked. An OpenAI key works here.
+            </p>
+          </div>
+
           {/* resume */}
           <div>
             <span className={label}>Résumé / background context</span>
