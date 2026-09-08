@@ -13,8 +13,9 @@
     ['faq', 'FAQ', '/faq'],
   ];
 
+  /* the mark: a line of testimony, struck from the record, and the line after it */
   const markSvg =
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+    '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="10" height="2" fill-opacity=".5"/><rect x="4" y="9.75" width="15" height="4.25"/><rect x="4" y="16.75" width="7" height="2" fill-opacity=".5"/></svg>';
 
   const head = D.getElementById('site-head');
   if (head) {
