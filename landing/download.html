@@ -10,10 +10,10 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/site.css?v=8" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/site.css?v=9" />
   <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js" defer></script>
-  <script src="/assets/main.js?v=8" defer></script>
+  <script src="/assets/main.js?v=9" defer></script>
 </head>
 <body data-page="download">
   <div id="site-head"></div>
@@ -22,7 +22,7 @@
     <header class="hero wrap" style="padding-top: clamp(7rem, 14vw, 9rem)">
       <div class="hero__aura"></div>
       <p class="eyebrow reveal">Download</p>
-      <h1 class="display reveal d1" style="max-width:16ch">Two minutes from download to first answer.</h1>
+      <h1 class="display reveal d1" style="max-width:20ch">Two minutes from download to first answer.</h1>
       <p class="lede reveal d2" style="max-width:44ch">Free, source-available, no account. You'll need one API key — free tiers are fine.</p>
       <div class="hero__cta reveal d3">
         <a class="btn btn-primary" href="https://github.com/sheikhMashuk/wishperai" target="_blank" rel="noopener">
@@ -30,7 +30,7 @@
         </a>
         <a class="btn btn-ghost" href="#source"><i data-lucide="terminal"></i> Build from source</a>
       </div>
-      <p class="reveal d3" style="margin-top:1rem;font-size:.85rem;color:var(--text-3);max-width:44ch">
+      <p class="reveal d3" style="margin-top:1rem;font-size:.85rem;color:var(--ink-3);max-width:44ch">
         Prebuilt installers aren't published yet — clone and build it, it's two commands. Star or watch
         the repo and you'll see the first release when it lands.
       </p>
@@ -52,7 +52,7 @@
     <section class="section wrap" id="setup" style="border-top:1px solid var(--line)">
       <div class="prose stack reveal" style="margin-bottom:2rem">
         <h2 class="display">First run</h2>
-        <p style="color:var(--text-2)">The window opens centred, frameless, on top. Drag it by the bar to wherever you want it.</p>
+        <p style="color:var(--ink-2)">The window opens centred, frameless, on top. Drag it by the bar to wherever you want it.</p>
       </div>
       <ol class="steps reveal">
         <li>
@@ -77,7 +77,7 @@
     <!-- hotkeys -->
     <section class="section wrap" id="hotkeys" style="border-top:1px solid var(--line)">
       <div class="prose stack reveal" style="margin-bottom:2rem"><h2 class="display">Keyboard shortcuts</h2>
-        <p style="color:var(--text-2)">Global — they work even when the call window or your editor has focus.</p>
+        <p style="color:var(--ink-2)">Global — they work even when the call window or your editor has focus.</p>
       </div>
       <dl class="spec reveal">
         <div><dt><kbd>Ctrl+Shift+H</kbd></dt><dd>Hide the overlay completely, or bring it back. The panic button.</dd></div>
@@ -85,7 +85,7 @@
         <div><dt><kbd>Ctrl+Shift+T</kbd></dt><dd>Toggle click-through — the mouse stops hitting the overlay.</dd></div>
         <div style="border:0"><dt><kbd>Ctrl+Shift+Q</kbd></dt><dd>Quit immediately.</dd></div>
       </dl>
-      <p class="reveal" style="margin-top:1rem;color:var(--text-3);font-size:.9rem">On some keyboards <kbd>Ctrl+Shift+H</kbd> clashes; <kbd>Alt+Shift+H</kbd> does the same thing.</p>
+      <p class="reveal" style="margin-top:1rem;color:var(--ink-3);font-size:.9rem">On some keyboards <kbd>Ctrl+Shift+H</kbd> clashes; <kbd>Alt+Shift+H</kbd> does the same thing.</p>
     </section>
 
     <!-- from source -->
@@ -101,7 +101,7 @@
 cd wishperai/client
 npm install
 npm run tauri dev      # or: npm run tauri build</pre>
-          <p style="font-size:.85rem;color:var(--text-3)">Needs Node 20.19+ and a Rust toolchain.</p>
+          <p style="font-size:.85rem;color:var(--ink-3)">Needs Node 20.19+ and a Rust toolchain.</p>
         </div>
       </div>
     </section>

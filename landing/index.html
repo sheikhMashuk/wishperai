@@ -11,11 +11,11 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/site.css?v=8" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/site.css?v=9" />
   <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js" defer></script>
-  <script src="/assets/main.js?v=8" defer></script>
-  <script src="/assets/home.js?v=8" defer></script>
+  <script src="/assets/main.js?v=9" defer></script>
+  <script src="/assets/home.js?v=9" defer></script>
 </head>
 <body data-page="home">
   <div id="site-head"></div>
@@ -32,7 +32,7 @@
         </h1>
         <p class="lede">
           It listens to the interviewer, drafts a sentence you can say out loud, and stays
-          out of the screen share entirely.
+          out of the <span class="redact" title="screen share">screen share</span> entirely.
         </p>
       </div>
       <div class="hero__cta reveal d2">
@@ -44,13 +44,16 @@
         <span>your model, your key</span><span>·</span>
         <span>no account, no telemetry</span>
       </div>
+      <p class="reveal d3" style="margin-top:1.6rem">
+        <span class="stamp">Not in the record</span>
+      </p>
 
       <!-- overlay mock -->
       <div class="mock reveal" style="margin-top: clamp(3rem, 8vw, 5.5rem); max-width: 640px;">
         <div class="mock__bar">
           <span class="l"><span class="dot"></span> WhisperAI
             <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-            <span class="mono" style="color:var(--text-3)">08:14</span>
+            <span class="mono" style="color:var(--ink-3)">08:14</span>
           </span>
           <span class="r">
             <span class="stop">Stop</span>
@@ -99,7 +102,7 @@
           A live interview measures a very specific thing: whether you can retrieve what you know while
           a stranger watches a timer. Most of us are worse at that than at the actual job.
         </p>
-        <p style="color:var(--text-2)">
+        <p style="color:var(--ink-2)">
           WhisperAI is a floor, not a script. It gives you the first clean sentence and three points
           worth making, fast enough to use, quiet enough that the call never knows it's there. What you
           do with that is still on you.
@@ -163,13 +166,13 @@
           </div>
 
           <div class="pin__card" data-card="2">
-            <div style="border:1px solid var(--accent);border-radius:10px;padding:.75rem;background:rgba(107,164,255,.06)">
-              <div class="mono" style="font-size:.68rem;color:var(--accent)">your monitor</div>
-              <div style="font-size:.85rem;color:#fff;margin-top:.2rem">overlay floating over the call</div>
+            <div style="border:1px solid var(--stamp);padding:.75rem;background:var(--stamp-bg)">
+              <div class="mono" style="font-size:.68rem;color:var(--stamp)">your monitor</div>
+              <div style="font-size:.85rem;color:var(--ink);margin-top:.2rem">overlay floating over the call</div>
             </div>
-            <div style="border:1px solid var(--line);border-radius:10px;padding:.75rem">
+            <div style="border:1px solid var(--line);padding:.75rem">
               <div class="mono" style="font-size:.68rem;color:var(--ok)">their screen share</div>
-              <div style="font-size:.85rem;color:var(--text-2);margin-top:.2rem">clean — nothing there</div>
+              <div style="font-size:.85rem;color:var(--ink-2);margin-top:.2rem">clean — nothing there</div>
             </div>
           </div>
         </div>
@@ -181,7 +184,7 @@
       <div class="prose stack reveal" style="margin-bottom: 2.5rem">
         <p class="eyebrow">Your model, always current</p>
         <h2 class="display">No hard-coded model names to go stale.</h2>
-        <p style="color:var(--text-2)">
+        <p style="color:var(--ink-2)">
           Pick Groq, OpenAI, Anthropic, OpenRouter, or a local Ollama. WhisperAI reads that provider's
           live model list, picks a fast default, and if a provider retires a model mid-call it re-fetches
           and swaps one in without you noticing. <a href="/features#models">More on that →</a>
