@@ -51,11 +51,28 @@ const HALLUCINATIONS = new Set([
   'transcribed by', 'amara.org', 'www.amara.org',
 ]);
 
-function transcriptionTarget(provider: string, key: string) {
+/** Tried in order; whichever the account can actually use is kept. */
+function transcriptionTarget(provider: string, key: string, langIsEnglish: boolean) {
   if (provider === 'openai') {
-    return { url: 'https://api.openai.com/v1/audio/transcriptions', model: 'whisper-1', key };
+    return {
+      url: 'https://api.openai.com/v1/audio/transcriptions',
+      models: ['gpt-4o-mini-transcribe', 'whisper-1'],
+      key,
+    };
   }
-  return { url: 'https://api.groq.com/openai/v1/audio/transcriptions', model: 'whisper-large-v3-turbo', key };
+  const groq = ['whisper-large-v3-turbo', 'whisper-large-v3'];
+  if (langIsEnglish) groq.push('distil-whisper-large-v3-en');
+  return { url: 'https://api.groq.com/openai/v1/audio/transcriptions', models: groq, key };
+}
+
+/** A 4xx that means "this model, not this request" — move to the next model. */
+function isModelBlocked(status: number, body: string): boolean {
+  if (status === 404) return true;
+  const b = body.toLowerCase();
+  return (
+    (status === 403 || status === 400) &&
+    /blocked|not exist|does not exist|not found|no access|decommission|unavailable|terminated|not supported/.test(b)
+  );
 }
 
 function b64ToBlob(b64: string): Blob {
@@ -75,6 +92,7 @@ class MeetingListener {
   private language = 'en';
   private silentTicks = 0;
   private target: ReturnType<typeof transcriptionTarget> | null = null;
+  private modelIdx = 0;
 
   private onSegmentCb: TextCb | null = null;
   private onInterimCb: TextCb | null = null;
@@ -105,8 +123,9 @@ class MeetingListener {
       return { ok: false, reason: 'Add your API key in Settings first.' };
     }
 
-    this.target = transcriptionTarget(opts.provider, opts.apiKey.trim());
     this.setLanguage(opts.language);
+    this.target = transcriptionTarget(opts.provider, opts.apiKey.trim(), this.language === 'en');
+    this.modelIdx = 0;
     this.accumulated = '';
     this.silentTicks = 0;
 
@@ -171,36 +190,48 @@ class MeetingListener {
 
   private async transcribe(wav: Blob): Promise<string> {
     const t = this.target!;
-    const form = new FormData();
-    form.append('file', wav, 'call.wav');
-    form.append('model', t.model);
-    form.append('response_format', 'json');
-    form.append('temperature', '0');
-    if (this.language) form.append('language', this.language);
 
-    const ctrl = new AbortController();
-    const kill = setTimeout(() => ctrl.abort(), 15000);
-    let res: Response;
-    try {
-      res = await fetch(t.url, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${t.key}` },
-        body: form,
-        signal: ctrl.signal,
-      });
-    } catch (e) {
-      throw new Error(
-        (e as Error).name === 'AbortError' ? 'request timed out' : `network — ${(e as Error).message}`,
-      );
-    } finally {
-      clearTimeout(kill);
-    }
-    if (!res.ok) {
-      const body = (await res.text().catch(() => '')).slice(0, 200);
+    // Try the current model; if the account can't use it, fall through to the next.
+    for (; this.modelIdx < t.models.length; this.modelIdx++) {
+      const model = t.models[this.modelIdx];
+      const form = new FormData();
+      form.append('file', wav, 'call.wav');
+      form.append('model', model);
+      form.append('response_format', 'json');
+      form.append('temperature', '0');
+      if (this.language) form.append('language', this.language);
+
+      const ctrl = new AbortController();
+      const kill = setTimeout(() => ctrl.abort(), 15000);
+      let res: Response;
+      try {
+        res = await fetch(t.url, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${t.key}` },
+          body: form,
+          signal: ctrl.signal,
+        });
+      } catch (e) {
+        throw new Error(
+          (e as Error).name === 'AbortError' ? 'request timed out' : `network — ${(e as Error).message}`,
+        );
+      } finally {
+        clearTimeout(kill);
+      }
+
+      if (res.ok) {
+        const json = await res.json();
+        return String(json.text ?? '').trim();
+      }
+
+      const body = (await res.text().catch(() => '')).slice(0, 220);
+      if (isModelBlocked(res.status, body) && this.modelIdx < t.models.length - 1) {
+        console.warn(`transcription model "${model}" unavailable, trying next`);
+        continue;
+      }
       throw new Error(`${res.status} ${res.statusText}${body ? ` — ${body}` : ''}`);
     }
-    const json = await res.json();
-    return String(json.text ?? '').trim();
+    throw new Error('no usable transcription model for this account');
   }
 
   private ingest(raw: string) {
