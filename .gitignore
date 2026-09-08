@@ -40,7 +40,10 @@ envs/
 *.key
 
 # IDE & OS
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 .idea/
 .DS_Store
 Thumbs.db

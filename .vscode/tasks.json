@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "WhisperAI: run (dev)",
+      "detail": "Start the desktop app with hot reload",
+      "type": "shell",
+      "command": "npm run tauri dev",
+      "options": { "cwd": "${workspaceFolder}/client" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "WhisperAI: build installer",
+      "detail": "Compile a release build + installer into client/src-tauri/target/release",
+      "type": "shell",
+      "command": "npm run tauri build",
+      "options": { "cwd": "${workspaceFolder}/client" },
+      "problemMatcher": []
+    },
+    {
+      "label": "WhisperAI: typecheck",
+      "type": "shell",
+      "command": "npx tsc -b --noEmit",
+      "options": { "cwd": "${workspaceFolder}/client" },
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Landing: preview",
+      "detail": "Serve the marketing site with clean URLs on http://localhost:4173",
+      "type": "shell",
+      "command": "npx --yes serve -l 4173 landing",
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    }
+  ]
+}
