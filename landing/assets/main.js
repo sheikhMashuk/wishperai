@@ -36,7 +36,7 @@
       <div class="mobile-nav" id="mnav">
         ${NAV.map(([id, label, href]) =>
           `<a href="${href}"${id === page ? ' aria-current="page"' : ''}>${label}</a>`).join('')}
-        <a class="btn btn-primary" href="/download">Download for Windows</a>
+        <a class="btn btn-primary" href="/download">Get WhisperAI</a>
       </div>`;
 
     const setIco = (open) => {
@@ -140,6 +140,69 @@
     // failsafe — never leave anything stuck invisible
     setTimeout(showAll, 3500);
     window.addEventListener('load', () => setTimeout(showAll, 1200));
+  }
+
+  /* ---------------- pinned scroll story ---------------- */
+  const stepsWrap = D.querySelector('[data-pin-steps]');
+  const stage = D.querySelector('[data-pin-stage]');
+  if (stepsWrap && stage && !matchMedia('(max-width: 860px)').matches) {
+    const steps = [...stepsWrap.querySelectorAll('.pin__step')];
+    const cards = [...stage.querySelectorAll('.pin__card')];
+    let current = -1;
+    // unlocks the sticky/fade styling — kept off until the driver exists so the
+    // section degrades to a plain stack rather than three invisible cards
+    D.documentElement.classList.add('pin-ready');
+
+    const activate = (i) => {
+      if (i === current) return;
+      current = i;
+      steps.forEach((s, n) => s.toggleAttribute('data-active', n === i));
+      cards.forEach((c, n) => c.toggleAttribute('data-active', n === i));
+    };
+    activate(0);
+
+    // the step whose middle sits closest to 45% down the viewport wins
+    const pick = () => {
+      const line = innerHeight * 0.45;
+      let best = 0;
+      let bestDist = Infinity;
+      steps.forEach((s, i) => {
+        const r = s.getBoundingClientRect();
+        const d = Math.abs(r.top + r.height / 2 - line);
+        if (d < bestDist) { bestDist = d; best = i; }
+      });
+      activate(best);
+    };
+
+    let queued = false;
+    const onPin = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { pick(); queued = false; });
+    };
+    pick();
+    window.addEventListener('scroll', onPin, { passive: true });
+    window.addEventListener('resize', onPin, { passive: true });
+  } else if (stage) {
+    // narrow screens: everything is stacked and always visible
+    stage.querySelectorAll('.pin__card').forEach((c) => c.setAttribute('data-active', ''));
+    D.querySelectorAll('.pin__step').forEach((s) => s.setAttribute('data-active', ''));
+  }
+
+  /* ---------------- hero mock drifts as you scroll ---------------- */
+  const heroMock = D.querySelector('.hero .mock');
+  if (heroMock && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let qd = false;
+    const drift = () => {
+      if (qd) return;
+      qd = true;
+      requestAnimationFrame(() => {
+        const y = Math.min(window.scrollY, 700);
+        heroMock.style.transform = `translateY(${y * -0.045}px) scale(${1 - y * 0.00004})`;
+        qd = false;
+      });
+    };
+    window.addEventListener('scroll', drift, { passive: true });
   }
 
   /* ---------------- faq accordion ---------------- */

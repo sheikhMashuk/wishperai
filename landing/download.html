@@ -11,9 +11,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/site.css?v=5" />
+  <link rel="stylesheet" href="/assets/site.css?v=8" />
   <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js" defer></script>
-  <script src="/assets/main.js?v=5" defer></script>
+  <script src="/assets/main.js?v=8" defer></script>
 </head>
 <body data-page="download">
   <div id="site-head"></div>
@@ -25,12 +25,14 @@
       <h1 class="display reveal d1" style="max-width:16ch">Two minutes from download to first answer.</h1>
       <p class="lede reveal d2" style="max-width:44ch">Free, source-available, no account. You'll need one API key — free tiers are fine.</p>
       <div class="hero__cta reveal d3">
-        <a class="btn btn-primary" href="#" aria-disabled="true"><i data-lucide="monitor-down"></i> Windows 10 / 11 (x64)</a>
-        <a class="btn btn-ghost" href="#" aria-disabled="true"><i data-lucide="apple"></i> macOS (Apple silicon)</a>
+        <a class="btn btn-primary" href="https://github.com/sheikhMashuk/wishperai" target="_blank" rel="noopener">
+          <i data-lucide="github"></i> Get it on GitHub
+        </a>
+        <a class="btn btn-ghost" href="#source"><i data-lucide="terminal"></i> Build from source</a>
       </div>
-      <p class="reveal d3" style="margin-top:1rem;font-family:var(--mono);font-size:.75rem;color:var(--text-3)">
-        v0.1 · ~9&nbsp;MB · SHA-256 published with each release ·
-        <a href="https://github.com/sheikhMashuk/wishperai/releases" target="_blank" rel="noopener">all releases</a>
+      <p class="reveal d3" style="margin-top:1rem;font-size:.85rem;color:var(--text-3);max-width:44ch">
+        Prebuilt installers aren't published yet — clone and build it, it's two commands. Star or watch
+        the repo and you'll see the first release when it lands.
       </p>
     </header>
 
@@ -40,8 +42,8 @@
       <dl class="spec reveal">
         <div><dt>OS</dt><dd><b>Windows 10 or 11, 64-bit.</b> macOS 13+ on Apple silicon for the mac build.</dd></div>
         <div><dt>a model</dt><dd>An API key for <b>Groq</b>, OpenAI, Anthropic or OpenRouter — each has a free tier. Or a local <b>Ollama</b> install, no key.</dd></div>
-        <div><dt>audio</dt><dd>Whatever you already use for calls. WhisperAI reads your default output device; no extra drivers.</dd></div>
-        <div><dt>a mic</dt><dd>For speech recognition. The one built into your laptop is enough.</dd></div>
+        <div><dt>transcription</dt><dd>A <b>Groq</b> or <b>OpenAI</b> key for Listen. Groq's free tier covers it; enable the Whisper models under model permissions.</dd></div>
+        <div><dt>audio</dt><dd>Whatever you already use for calls. It reads your default output device — <b>no microphone access</b>, no extra drivers.</dd></div>
         <div style="border:0"><dt>disk</dt><dd>~30&nbsp;MB installed. No background service, no auto-start unless you add it.</dd></div>
       </dl>
     </section>
@@ -107,9 +109,11 @@ npm run tauri dev      # or: npm run tauri build</pre>
     <section class="section wrap">
       <div class="cta-block reveal">
         <h2 class="display">Get it.</h2>
-        <p class="lede">Then read <a href="/features">what it does</a> or <a href="/security">how it stays hidden</a> while it downloads.</p>
+        <p class="lede">Clone it, build it, paste a key. Then read <a href="/features">what it does</a> or <a href="/security">how it stays hidden</a>.</p>
         <div class="hero__cta">
-          <a class="btn btn-primary" href="#"><i data-lucide="monitor-down"></i> Download for Windows</a>
+          <a class="btn btn-primary" href="https://github.com/sheikhMashuk/wishperai" target="_blank" rel="noopener">
+            <i data-lucide="github"></i> Open the repo
+          </a>
         </div>
       </div>
     </section>

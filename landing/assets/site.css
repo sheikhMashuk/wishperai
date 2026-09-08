@@ -154,11 +154,11 @@ code:not(pre code) {
   font-size: .92rem;
   font-weight: 600;
   letter-spacing: -.01em;
-  transition: transform .16s var(--ease), background .15s, border-color .15s, box-shadow .2s;
+  transition: transform .3s cubic-bezier(.34, 1.4, .5, 1), background .15s, border-color .15s, box-shadow .25s;
   white-space: nowrap;
 }
 .btn svg { width: 1rem; height: 1rem; }
-.btn:hover { transform: translateY(-1px); }
+.btn:hover { transform: translateY(-2px); }
 .btn:active { transform: translateY(0); }
 .btn-primary { background: var(--accent); color: var(--accent-ink); }
 .btn-primary:hover { background: #82b4ff; box-shadow: 0 8px 30px -8px rgba(107,164,255,.5); }
@@ -270,8 +270,8 @@ code:not(pre code) {
   box-shadow: 0 50px 120px -30px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04);
   transition: transform .4s var(--ease), box-shadow .4s var(--ease);
 }
+/* no transform here — the hero mock's drift is driven inline from JS */
 .mock:hover {
-  transform: translateY(-4px);
   box-shadow: 0 60px 140px -30px rgba(0,0,0,.85), 0 0 0 1px rgba(107,164,255,.18), inset 0 1px 0 rgba(255,255,255,.05);
 }
 .mock__bar { display: flex; align-items: center; justify-content: space-between; height: 2.7rem; padding-inline: .7rem; }
@@ -355,6 +355,66 @@ pre.code {
 .panel p { color: var(--text-2); font-size: .93rem; }
 .panel .ico { width: 2.1rem; height: 2.1rem; display: grid; place-items: center; border-radius: 10px; background: var(--accent-bg); color: var(--accent); margin-bottom: 1rem; }
 .panel .ico svg { width: 1.1rem; height: 1.1rem; }
+
+/* ---------- pinned scroll story ----------
+   text scrolls, the visual stays put and swaps as each step comes up */
+.pin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 7vw, 6rem);
+  align-items: start;
+}
+.pin__steps { display: grid; }
+.pin__step { padding-block: 26vh; transition: opacity .5s var(--ease); }
+/* the dimming and the card swap only exist once the driver is live — without JS
+   the steps and every card stay plainly visible instead of fading to nothing */
+html.pin-ready .pin__step { opacity: .3; }
+html.pin-ready .pin__step[data-active] { opacity: 1; }
+.pin__step .eyebrow { display: block; margin-bottom: .7rem; }
+.pin__step h3 {
+  font-size: clamp(1.45rem, 2.7vw, 2.05rem);
+  letter-spacing: -.02em;
+  margin-bottom: .8rem;
+}
+.pin__step p { color: var(--text-2); font-size: 1rem; }
+.pin__step p + p { margin-top: .75rem; }
+
+.pin__stage { position: static; height: auto; }
+.pin__card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg-2);
+  padding: 1.4rem;
+  display: grid;
+  align-content: center;
+  gap: .7rem;
+  margin-bottom: .8rem;
+  transition: opacity .55s var(--ease), transform .55s var(--ease);
+}
+html.pin-ready .pin__stage { position: sticky; top: 38vh; height: 15rem; }
+html.pin-ready .pin__card {
+  position: absolute;
+  inset: 0;
+  margin-bottom: 0;
+  opacity: 0;
+  transform: translateY(14px) scale(.985);
+  pointer-events: none;
+}
+html.pin-ready .pin__card[data-active] { opacity: 1; transform: none; pointer-events: auto; }
+
+/* narrow screens stack everything, even if pin-ready was set before a resize */
+@media (max-width: 860px) {
+  .pin { grid-template-columns: 1fr; gap: 0; }
+  html.pin-ready .pin__stage { position: static; height: auto; margin-bottom: 1.2rem; }
+  html.pin-ready .pin__card {
+    position: static;
+    opacity: 1;
+    transform: none;
+    margin-bottom: .8rem;
+    pointer-events: auto;
+  }
+  .pin__step, html.pin-ready .pin__step { padding-block: 2.5rem; opacity: 1; }
+}
 
 /* alternating feature rows — the editorial layout */
 .feature-row {
@@ -479,12 +539,33 @@ pre.code {
 
 /* ---------- scroll reveal ----------
    visible by default; only hidden once JS proves it can reveal them again */
-.reveal { transition: opacity .7s var(--ease), transform .7s var(--ease); }
-html.reveal-ready .reveal:not(.seen) { opacity: 0; transform: translateY(22px); }
-.reveal.seen { opacity: 1; transform: none; }
-.reveal.d1 { transition-delay: .08s }
-.reveal.d2 { transition-delay: .16s }
-.reveal.d3 { transition-delay: .24s }
+.reveal {
+  transition: opacity .85s var(--ease), transform .85s var(--ease), filter .85s var(--ease);
+}
+html.reveal-ready .reveal:not(.seen) {
+  opacity: 0;
+  transform: translateY(26px);
+  filter: blur(7px);
+}
+.reveal.seen { opacity: 1; transform: none; filter: blur(0); }
+.reveal.d1 { transition-delay: .09s }
+.reveal.d2 { transition-delay: .18s }
+.reveal.d3 { transition-delay: .27s }
+
+/* hero lines resolve one after another */
+.rise > * {
+  display: block;
+  opacity: 0;
+  transform: translateY(0.5em);
+  filter: blur(9px);
+  animation: rise .95s var(--ease) forwards;
+}
+.rise > *:nth-child(1) { animation-delay: .05s }
+.rise > *:nth-child(2) { animation-delay: .16s }
+.rise > *:nth-child(3) { animation-delay: .27s }
+@keyframes rise {
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
 
 /* feature-row text slides in from its side */
 html.reveal-ready .feature-row.reveal:not(.seen) > div:first-child { transform: translateX(-16px); opacity: 0; }

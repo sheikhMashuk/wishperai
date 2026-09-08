@@ -12,10 +12,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/site.css?v=5" />
+  <link rel="stylesheet" href="/assets/site.css?v=8" />
   <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js" defer></script>
-  <script src="/assets/main.js?v=5" defer></script>
-  <script src="/assets/home.js?v=5" defer></script>
+  <script src="/assets/main.js?v=8" defer></script>
+  <script src="/assets/home.js?v=8" defer></script>
 </head>
 <body data-page="home">
   <div id="site-head"></div>
@@ -24,23 +24,24 @@
     <!-- ===== hero ===== -->
     <section class="hero wrap">
       <div class="hero__aura"></div>
-      <p class="eyebrow reveal">A desktop copilot for live conversations</p>
-      <h1 class="display reveal d1">
-        A quiet second brain<br />
-        for the questions you <em>don't&nbsp;see&nbsp;coming.</em>
-      </h1>
-      <p class="lede reveal d2">
-        WhisperAI listens to the interviewer, drafts a sentence you can say out loud, and
-        stays completely out of the screen share. You bring the model and the key — it keeps nothing.
-      </p>
-      <div class="hero__cta reveal d3">
-        <a class="btn btn-primary" href="/download"><i data-lucide="monitor-down"></i> Download for Windows</a>
+      <div class="rise">
+        <p class="eyebrow">A desktop copilot for live conversations</p>
+        <h1 class="display">
+          A quiet second brain<br />
+          for the questions you <em>don't&nbsp;see&nbsp;coming.</em>
+        </h1>
+        <p class="lede">
+          It listens to the interviewer, drafts a sentence you can say out loud, and stays
+          out of the screen share entirely.
+        </p>
+      </div>
+      <div class="hero__cta reveal d2">
+        <a class="btn btn-primary" href="/download"><i data-lucide="monitor-down"></i> Get WhisperAI</a>
         <a class="btn btn-ghost" href="/security">How it stays hidden</a>
       </div>
       <div class="hero__meta reveal d3">
-        <span>Windows 10 / 11</span><span>·</span>
-        <span>macOS build</span><span>·</span>
-        <span>Rust + Tauri</span><span>·</span>
+        <span>Windows &amp; macOS</span><span>·</span>
+        <span>your model, your key</span><span>·</span>
         <span>no account, no telemetry</span>
       </div>
 
@@ -108,68 +109,67 @@
 
     <hr class="rule wrap" style="max-width:var(--wrap)" />
 
-    <!-- ===== three things (feature rows) ===== -->
-    <section class="wrap">
-      <div class="feature-row reveal">
-        <div>
-          <p class="eyebrow">Hears the room</p>
-          <h3>It catches the question before you've stopped nodding.</h3>
-          <p>
-            Live transcription runs on the call audio. When a question lands and the interviewer
-            pauses, WhisperAI answers on its own — no button, no hotword. Or type your own and hit
-            <kbd>Enter</kbd>.
-          </p>
-          <p>Seven recognition languages, and a WASAPI loopback tap so it hears their side without a virtual cable.</p>
-        </div>
-        <div class="feature-row__media">
-          <div class="mock__live" style="border:0;padding:0;margin:0"><b>Live</b><span>can you walk me through how you'd shard that…</span></div>
-          <pre class="code">detected: question · silence 380ms
-→ drafting answer  (Groq · gpt-oss-20b)</pre>
-        </div>
-      </div>
+    <!-- ===== pinned scroll story ===== -->
+    <section class="wrap" id="story">
+      <div class="pin">
+        <div class="pin__steps" data-pin-steps>
+          <div class="pin__step" data-step="0">
+            <span class="eyebrow">One — it hears them</span>
+            <h3>The question lands before you've stopped nodding.</h3>
+            <p>
+              WhisperAI taps the call's own audio, waits for the interviewer to finish a sentence,
+              and transcribes it. No bot in the meeting. Your microphone is never opened.
+            </p>
+          </div>
 
-      <div class="feature-row reveal">
-        <div>
-          <p class="eyebrow">Speaks first, elaborates after</p>
-          <h3>One sayable sentence, then the supporting points.</h3>
-          <p>
-            The headline streams in first — short, first person, ready to speak. The talking points and
-            any code (with the Big-O) fill in underneath while you're already talking.
-          </p>
-          <p>Behavioral questions come back shaped as a STAR story. Coding questions come back as a clean solution.</p>
+          <div class="pin__step" data-step="1">
+            <span class="eyebrow">Two — it answers</span>
+            <h3>One sayable sentence, then the detail.</h3>
+            <p>
+              A short first-person line arrives first, ready to speak. The supporting points — and
+              code with its complexity, if it's that kind of question — fill in while you're already
+              talking.
+            </p>
+          </div>
+
+          <div class="pin__step" data-step="2">
+            <span class="eyebrow">Three — nobody sees it</span>
+            <h3>Their recording has a WhisperAI-shaped hole in it.</h3>
+            <p>
+              The window asks the compositor to skip it whenever a frame is captured. Zoom, Meet,
+              Teams, OBS — the overlay simply isn't in the picture.
+            </p>
+          </div>
         </div>
-        <div class="feature-row__media">
-          <div class="mock__card" style="background:transparent;border-color:var(--line)">
+
+        <div class="pin__stage" data-pin-stage>
+          <div class="pin__card" data-card="0">
+            <div class="mock__live" style="border:0;padding:0;margin:0">
+              <b>Them</b><span>…can you walk me through how you'd shard that?</span>
+            </div>
+            <pre class="code">pause detected · 0.7s
+→ drafting answer</pre>
+          </div>
+
+          <div class="pin__card" data-card="1">
             <div class="mock__tags"><b>Coding</b><span>171 ms</span></div>
-            <p class="mock__a" style="font-size:.82rem">"Hash map for the lookup, doubly linked list for ordering — both O(1)."</p>
+            <p class="mock__a" style="font-size:.85rem">
+              "Hash map for the lookup, doubly linked list for ordering — both O(1)."
+            </p>
             <ul class="mock__pts">
               <li>get: unlink the node, splice it behind the head.</li>
               <li>evict tail.prev when capacity is exceeded.</li>
             </ul>
           </div>
-        </div>
-      </div>
 
-      <div class="feature-row reveal">
-        <div>
-          <p class="eyebrow">Not in the frame</p>
-          <h3>The interviewer's screen recording has a WhisperAI-shaped hole in it.</h3>
-          <p>
-            It's a native window that asks the compositor to skip it whenever a frame is captured —
-            <code>WDA_EXCLUDEFROMCAPTURE</code> on Windows, the private-window flag on macOS. Zoom, Meet,
-            Teams, OBS, Game Bar: none of them see it.
-          </p>
-          <p>No bot joins the call, so there's no participant and no "recording" banner either.</p>
-        </div>
-        <div class="feature-row__media">
-          <div style="display:grid;gap:.6rem">
-            <div style="border:1px solid var(--accent);border-radius:10px;padding:.7rem;background:rgba(107,164,255,.06)">
+          <div class="pin__card" data-card="2">
+            <div style="border:1px solid var(--accent);border-radius:10px;padding:.75rem;background:rgba(107,164,255,.06)">
               <div class="mono" style="font-size:.68rem;color:var(--accent)">your monitor</div>
-              <div style="font-size:.8rem;color:#fff;margin-top:.2rem">overlay floating over the call</div>
+              <div style="font-size:.85rem;color:#fff;margin-top:.2rem">overlay floating over the call</div>
             </div>
-            <div style="border:1px solid var(--line);border-radius:10px;padding:.7rem">
+            <div style="border:1px solid var(--line);border-radius:10px;padding:.75rem">
               <div class="mono" style="font-size:.68rem;color:var(--ok)">their screen share</div>
-              <div style="font-size:.8rem;color:var(--text-2);margin-top:.2rem">clean — nothing there</div>
+              <div style="font-size:.85rem;color:var(--text-2);margin-top:.2rem">clean — nothing there</div>
             </div>
           </div>
         </div>
@@ -212,7 +212,7 @@
         <h2 class="display">Walk in with a backup.</h2>
         <p class="lede">Free, source-available, no sign-up. Download it, paste a key, and the next hard question isn't only yours to carry.</p>
         <div class="hero__cta">
-          <a class="btn btn-primary" href="/download"><i data-lucide="monitor-down"></i> Download for Windows</a>
+          <a class="btn btn-primary" href="/download"><i data-lucide="monitor-down"></i> Get WhisperAI</a>
           <a class="btn btn-ghost" href="/features">See everything it does</a>
         </div>
       </div>
