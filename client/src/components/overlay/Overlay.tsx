@@ -25,6 +25,8 @@ import { AudioBars } from './AudioBars';
 import { SettingsModal } from '../settings/SettingsModal';
 
 const STORAGE_KEY = 'whisperai.settings';
+const HISTORY_KEY = 'whisperai.history';
+const HISTORY_LIMIT = 40;
 const IN_TAURI = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
 const CHIPS = [
@@ -69,9 +71,33 @@ function fmtElapsed(ms: number): string {
   return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 }
 
+/** Past answers, most recent last. Survives restarts. */
+function loadHistory(): Answer[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (!raw) return [];
+    const list = JSON.parse(raw) as Answer[];
+    return Array.isArray(list) ? list.map((a) => ({ ...a, streaming: false })) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(list: Answer[]) {
+  try {
+    const trimmed = list
+      .filter((a) => !a.streaming)
+      .slice(-HISTORY_LIMIT)
+      .map(({ streaming: _s, ...a }) => a);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
+  } catch {
+    /* quota / disabled — history just won't persist */
+  }
+}
+
 export function Overlay() {
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
-  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [answers, setAnswers] = useState<Answer[]>(loadHistory);
   const [listening, setListening] = useState(false);
   const [interim, setInterim] = useState('');
   const [input, setInput] = useState('');
@@ -107,6 +133,12 @@ export function Overlay() {
       if (key) setSettings((s) => ({ ...s, apiKey: key }));
     });
   }, []);
+
+  /* persist conversation history (skips in-flight cards) */
+  useEffect(() => {
+    if (answers.some((a) => a.streaming)) return;
+    saveHistory(answers);
+  }, [answers]);
 
   /* ---- tauri events ------------------------------------------------------ */
   useEffect(() => {
@@ -278,7 +310,17 @@ export function Overlay() {
             <IconBtn title={clickThrough ? 'Disable click-through (Ctrl+Shift+T)' : 'Click-through (Ctrl+Shift+T)'} onClick={toggleClickThrough}>
               {clickThrough ? <Lock className="h-3.5 w-3.5 text-amber-400" /> : <Unlock className="h-3.5 w-3.5" />}
             </IconBtn>
-            <IconBtn title="Clear" onClick={() => setAnswers([])}>
+            <IconBtn
+              title="Clear history"
+              onClick={() => {
+                setAnswers([]);
+                try {
+                  localStorage.removeItem(HISTORY_KEY);
+                } catch {
+                  /* ignore */
+                }
+              }}
+            >
               <Trash2 className="h-3.5 w-3.5" />
             </IconBtn>
             <IconBtn title="Settings" onClick={() => setShowSettings(true)}>
