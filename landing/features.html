@@ -34,13 +34,14 @@
           <p class="eyebrow">Hearing</p>
           <h3>Automatic question detection</h3>
           <p>
-            Speech recognition runs continuously on the call. WhisperAI watches the transcript for a
-            question — a rising phrase, a question mark, a starter like <em>"how would you"</em> — and a
-            short silence after it. When both happen, it drafts an answer with no input from you.
+            WhisperAI captures the call's system audio — the other people, via WASAPI loopback on
+            Windows — and transcribes it in short chunks through Whisper. <strong>Your own microphone
+            is never opened.</strong> No virtual audio device, no meeting bot.
           </p>
           <p>
-            It also taps your audio output directly (WASAPI loopback on Windows), so it hears the
-            interviewer even when they're the one talking and your mic is muted. No virtual audio device.
+            It watches that transcript for a question — a rising phrase, a question mark, a starter like
+            <em>"how would you"</em> — followed by a short silence, and drafts an answer on its own.
+            (Transcription uses your Groq or OpenAI key.)
           </p>
         </div>
         <div class="feature-row__media">

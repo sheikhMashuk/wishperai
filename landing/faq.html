@@ -45,8 +45,9 @@
           <button class="faq-q">How does it hear the interviewer with no bot? <i data-lucide="plus"></i></button>
           <div class="faq-a"><div><p>
             WASAPI loopback capture on Windows — it reads whatever is playing out of your speakers or
-            headphones, in parallel with your microphone. No virtual audio cable, no meeting bot. The call
-            software isn't involved and can't see it.
+            headphones, which is the other people on the call. Your own microphone is never opened. No
+            virtual audio cable, no meeting bot; the call software isn't involved and can't see it. The
+            audio is transcribed in short chunks by your provider's Whisper (Groq or OpenAI).
           </p></div></div>
         </div>
 

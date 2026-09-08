@@ -97,8 +97,8 @@
       </div>
       <dl class="spec reveal" style="margin-top:2rem">
         <div><dt>API key</dt><dd>Windows Credential Manager / macOS Keychain, via the system <code>keyring</code> API. Never a plaintext file.</dd></div>
-        <div><dt>settings</dt><dd>Provider, model, résumé text, language — <code>localStorage</code> on that machine only.</dd></div>
-        <div><dt>transcription</dt><dd>Runs in the app. The rolling transcript is kept in memory and discarded; it's never uploaded on its own.</dd></div>
+        <div><dt>settings + history</dt><dd>Provider, model, résumé text, language and the last ~40 answers — <code>localStorage</code> on that machine only. Cleared by the Clear button.</dd></div>
+        <div><dt>call audio</dt><dd>When you press Listen, short chunks of the call's <em>system audio</em> (not your mic) are sent to your transcription provider — Groq or OpenAI Whisper, using the same key. Nothing is written to disk.</dd></div>
         <div><dt>prompts &amp; answers</dt><dd>Sent directly to your provider's endpoint (or your local Ollama). Their retention policy applies, not ours — we don't have one because we never see them.</dd></div>
         <div style="border:0"><dt>telemetry</dt><dd>None. No crash reporting, no usage pings, no update check that phones home with an id.</dd></div>
       </dl>
