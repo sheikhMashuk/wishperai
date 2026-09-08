@@ -165,9 +165,15 @@ impl AudioCaptureService {
 
         let peak = samples.iter().fold(0f32, |m, &s| m.max(s.abs()));
         let seconds = samples.len() as f32 / SR as f32;
-        info!("utterance: {seconds:.1}s peak={peak:.4}");
+
+        // Call audio arrives quiet (Meet's own gain + the system volume).
+        // Whisper is markedly more accurate on a well-levelled signal.
+        let gain = if peak > 0.005 { (0.89 / peak).min(20.0) } else { 1.0 };
+        let levelled: Vec<f32> = samples.iter().map(|&s| (s * gain).clamp(-1.0, 1.0)).collect();
+
+        info!("utterance: {seconds:.1}s peak={peak:.4} gain={gain:.1}x");
         MeetingChunk {
-            wav: base64(&encode_wav(&samples, SR as u32)),
+            wav: base64(&encode_wav(&levelled, SR as u32)),
             seconds,
             peak,
             ..base
