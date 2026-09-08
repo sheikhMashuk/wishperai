@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /404.html
 
-Sitemap: https://wishperai.tech/sitemap.xml
+Sitemap: https://wishperai.dev/sitemap.xml

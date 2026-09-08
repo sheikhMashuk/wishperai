@@ -4,7 +4,7 @@ A desktop overlay that hears a live conversation, drafts an answer you can say
 out loud, and stays out of every screen share. Bring your own model key.
 
 - **`client/`** — the desktop app (Tauri: Rust core + React UI)
-- **`landing/`** — the marketing site (static, deploys to Cloudflare, [wishperai.tech](https://wishperai.tech))
+- **`landing/`** — the marketing site (static, deploys to Cloudflare, [wishperai.dev](https://wishperai.dev))
 - **`server/`** — a small FastAPI service for auth + saved meetings (optional; the app works without it)
 - **`infra/`** — deployment config
 
