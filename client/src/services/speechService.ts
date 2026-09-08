@@ -22,16 +22,25 @@ export interface ListenResult {
 export type ListenStatus =
   | { kind: 'waiting' }
   | { kind: 'silent'; device: string }
+  | { kind: 'hearing' }
   | { kind: 'transcribing' }
   | { kind: 'heard'; text: string }
   | { kind: 'error'; detail: string };
 
 interface MeetingChunk {
-  wav: string; // base64, empty when nothing
+  wav: string; // base64 of one complete utterance, empty when none ready
   seconds: number;
   peak: number;
   device: string;
   running: boolean;
+  speaking: boolean;
+  queued: number;
+}
+
+interface WhisperSegment {
+  text: string;
+  no_speech_prob?: number;
+  avg_logprob?: number;
 }
 
 /* ---- question heuristics ---- */
@@ -39,6 +48,7 @@ const QUESTION_STARTERS = [
   'how', 'what', 'why', 'when', 'where', 'who', 'can you', 'could you', 'would you',
   'tell me about', 'explain', 'describe', 'walk me through', 'implement', 'write a', 'design a',
   'difference between', 'how would you', 'what is', "what's", 'give me', 'let us', "let's",
+  'have you', 'do you', 'are you', 'which', 'suppose', 'imagine', 'consider',
 ];
 function looksLikeQuestion(text: string): boolean {
   const q = text.toLowerCase().trim();
@@ -46,13 +56,25 @@ function looksLikeQuestion(text: string): boolean {
   return QUESTION_STARTERS.some((s) => q.startsWith(s) || q.includes(` ${s} `));
 }
 
-/* Whisper on a near-silent or very short clip tends to invent these. */
+/* Whisper invents these on near-silence, music, or a fragment. */
 const HALLUCINATIONS = new Set([
   'you', 'thank you', 'thank you.', 'thanks', 'thanks for watching', 'thank you very much',
-  'please subscribe', 'subscribe', 'bye', 'bye.', 'okay', 'ok', 'so', 'so.', 'mm', 'mmm',
-  'mm-hmm', 'uh', 'um', 'yeah', 'the', '.', '. .', 'i', "i'm sorry", 'silence', '[silence]',
-  'transcribed by', 'amara.org', 'www.amara.org',
+  'thank you for watching', 'thanks for watching!', 'please subscribe', 'subscribe', "don't forget to subscribe",
+  'like and subscribe', 'see you next time', 'see you in the next video', 'bye', 'bye.', 'bye bye',
+  'okay', 'ok', 'so', 'so.', 'mm', 'mmm', 'mm-hmm', 'hmm', 'uh', 'um', 'yeah', 'yep', 'right',
+  'the', '.', '. .', '...', 'i', "i'm sorry", 'silence', '[silence]', '[music]', '(music)',
+  'transcribed by', 'amara.org', 'www.amara.org', 'subtitles by the amara.org community',
+  'transcription by castingwords', 'peace', 'oh', 'ah', 'wow', 'i am', 'yeah.', 'okay.',
 ]);
+
+/** cheap similarity — 1.0 identical, ~0 unrelated */
+function similar(a: string, b: string): number {
+  if (!a || !b) return 0;
+  const wa = new Set(a.toLowerCase().split(/\s+/));
+  const wb = b.toLowerCase().split(/\s+/);
+  if (!wb.length) return 0;
+  return wb.filter((w) => wa.has(w)).length / Math.max(wa.size, wb.length);
+}
 
 /** Tried in order; whichever the account can actually use is kept. */
 function transcriptionTarget(provider: string, key: string, transcriptionKey?: string) {
@@ -109,6 +131,9 @@ class MeetingListener {
   private silentTicks = 0;
   private target: ReturnType<typeof transcriptionTarget> | null = null;
   private modelIdx = 0;
+  /** rolling context handed to Whisper as a prompt, and the last accepted line */
+  private context = '';
+  private lastHeard = '';
 
   private onSegmentCb: TextCb | null = null;
   private onInterimCb: TextCb | null = null;
@@ -148,6 +173,8 @@ class MeetingListener {
     this.target = transcriptionTarget(opts.provider, opts.apiKey.trim(), tKey);
     this.modelIdx = 0;
     this.accumulated = '';
+    this.context = '';
+    this.lastHeard = '';
     this.silentTicks = 0;
 
     try {
@@ -158,7 +185,8 @@ class MeetingListener {
 
     this.listening = true;
     this.onStatusCb?.({ kind: 'waiting' });
-    this.timer = setInterval(() => void this.tick(), 1600);
+    // cheap poll — Rust only hands over whole utterances, one per pause
+    this.timer = setInterval(() => void this.tick(), 450);
     return { ok: true };
   }
 
@@ -167,6 +195,8 @@ class MeetingListener {
     clearInterval(this.timer);
     clearTimeout(this.silenceTimer);
     this.accumulated = '';
+    this.context = '';
+    this.lastHeard = '';
     invoke('stop_audio_capture').catch(() => {});
   }
 
@@ -182,10 +212,12 @@ class MeetingListener {
     }
 
     if (!chunk.wav) {
-      // nothing to transcribe — say why
-      if (chunk.peak < 0.0025) {
+      if (chunk.speaking || chunk.queued > 0) {
+        this.silentTicks = 0;
+        this.onStatusCb?.({ kind: 'hearing' });
+      } else if (chunk.peak < 0.003) {
         this.silentTicks++;
-        if (this.silentTicks >= 3) {
+        if (this.silentTicks >= 8) {
           this.onStatusCb?.({ kind: 'silent', device: chunk.device || 'default output' });
         }
       } else {
@@ -218,9 +250,10 @@ class MeetingListener {
       const form = new FormData();
       form.append('file', wav, 'call.wav');
       form.append('model', model);
-      form.append('response_format', 'json');
+      form.append('response_format', model.includes('gpt-4o') ? 'json' : 'verbose_json');
       form.append('temperature', '0');
       if (this.language) form.append('language', this.language);
+      if (this.context) form.append('prompt', this.context.slice(-380));
 
       const ctrl = new AbortController();
       const kill = setTimeout(() => ctrl.abort(), 15000);
@@ -242,6 +275,15 @@ class MeetingListener {
 
       if (res.ok) {
         const json = await res.json();
+        const segs: WhisperSegment[] | undefined = json.segments;
+        if (Array.isArray(segs) && segs.length) {
+          // drop segments Whisper itself flags as probably-not-speech / low confidence
+          const kept = segs
+            .filter((s) => (s.no_speech_prob ?? 0) < 0.55 && (s.avg_logprob ?? 0) > -1.1)
+            .map((s) => s.text.trim())
+            .filter(Boolean);
+          return kept.join(' ').replace(/\s+/g, ' ').trim();
+        }
         return String(json.text ?? '').trim();
       }
 
@@ -261,27 +303,39 @@ class MeetingListener {
   }
 
   private ingest(raw: string) {
-    const clean = raw.replace(/\s+/g, ' ').trim();
-    const key = clean.toLowerCase().replace(/[.!?,]+$/g, '').trim();
+    let clean = raw.replace(/\s+/g, ' ').trim();
+    // collapse "word word word word" runs Whisper sometimes emits on a stall
+    clean = clean.replace(/\b(\w+)(\s+\1\b){2,}/gi, '$1');
+    const key = clean.toLowerCase().replace(/[.!?,\s]+$/g, '').trim();
+
     if (clean.length < 3 || HALLUCINATIONS.has(key)) return;
+    // one or two words that are all filler
+    if (key.split(' ').every((w) => HALLUCINATIONS.has(w)) && key.split(' ').length <= 2) return;
+    // near-repeat of the last line (overlapping utterance re-transcribed)
+    if (similar(this.lastHeard, clean) > 0.82) return;
+
+    this.lastHeard = clean;
+    this.context = `${this.context} ${clean}`.trim().slice(-420);
 
     this.onStatusCb?.({ kind: 'heard', text: clean });
     this.onInterimCb?.(clean);
     this.accumulated = `${this.accumulated} ${clean}`.trim();
     this.onSegmentCb?.(clean);
-    this.scheduleQuestionCheck();
+    this.scheduleQuestionCheck(clean);
   }
 
-  private scheduleQuestionCheck() {
+  private scheduleQuestionCheck(lastLine: string) {
     clearTimeout(this.silenceTimer);
-    const delay = looksLikeQuestion(this.accumulated) ? 500 : 1500;
+    // an utterance that already ends like a question — answer almost immediately
+    const strong = /\?\s*$/.test(lastLine) || (looksLikeQuestion(lastLine) && lastLine.length > 14);
+    const delay = strong ? 150 : looksLikeQuestion(this.accumulated) ? 500 : 1400;
     this.silenceTimer = setTimeout(() => {
       const text = this.accumulated.trim();
       if (text.length > 10 && looksLikeQuestion(text)) {
         this.onQuestionCb?.(text);
         this.accumulated = '';
-      } else if (text.length > 240) {
-        this.accumulated = text.slice(-140);
+      } else if (text.length > 260) {
+        this.accumulated = text.slice(-160);
       }
     }, delay);
   }

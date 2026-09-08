@@ -3,21 +3,112 @@ use cpal::{Device, SampleFormat, Stream, StreamConfig};
 use log::{error, info, warn};
 use parking_lot::Mutex;
 use serde::Serialize;
+use std::collections::VecDeque;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
 use super::resampler::{AudioResampler, TARGET_SAMPLE_RATE};
 
-/// Base64 alphabet, no padding needed for the frontend's `atob` (we pad).
+const SR: usize = TARGET_SAMPLE_RATE; // 16_000
+
+/* ---- voice-activity segmentation ---------------------------------- *
+ * Instead of slicing the audio on a timer (which cuts words in half and
+ * makes Whisper hallucinate), we wait for a natural pause and hand the
+ * whole utterance over as one clip.
+ * ------------------------------------------------------------------- */
+const SPEECH_ON: f32 = 0.012; // rms to start an utterance
+const SPEECH_OFF: f32 = 0.007; // rms that counts as silence
+const HANGOVER: usize = SR * 700 / 1000; // silence that ends an utterance
+const PREROLL: usize = SR * 300 / 1000; // keep this much lead-in
+const TRAIL: usize = SR * 250 / 1000; // keep this much tail
+const MIN_UTTER: usize = SR * 350 / 1000; // discard anything shorter
+const MAX_UTTER: usize = SR * 22; // force-flush a monologue
+const MAX_READY: usize = 6; // cap the pending queue
+
+#[derive(Default)]
+struct Vad {
+    preroll: VecDeque<f32>,
+    current: Vec<f32>,
+    in_speech: bool,
+    hangover: usize,
+    ready: VecDeque<Vec<f32>>,
+    rms: f32, // smoothed, for the meter
+}
+
+impl Vad {
+    fn feed(&mut self, block: &[f32]) {
+        if block.is_empty() {
+            return;
+        }
+        let energy = (block.iter().map(|&s| s * s).sum::<f32>() / block.len() as f32).sqrt();
+        self.rms = self.rms * 0.6 + energy * 0.4;
+
+        if !self.in_speech {
+            self.preroll.extend(block.iter().copied());
+            while self.preroll.len() > PREROLL {
+                self.preroll.pop_front();
+            }
+            if energy > SPEECH_ON {
+                self.in_speech = true;
+                self.hangover = 0;
+                self.current = self.preroll.drain(..).collect();
+            }
+            return;
+        }
+
+        self.current.extend_from_slice(block);
+        if energy < SPEECH_OFF {
+            self.hangover += block.len();
+        } else {
+            self.hangover = 0;
+        }
+
+        if self.hangover >= HANGOVER || self.current.len() >= MAX_UTTER {
+            self.finish();
+        }
+    }
+
+    fn finish(&mut self) {
+        // trim the trailing silence down to TRAIL
+        let keep = self.current.len().saturating_sub(self.hangover) + TRAIL;
+        self.current.truncate(keep.min(self.current.len()));
+
+        let peak = self.current.iter().fold(0f32, |m, &s| m.max(s.abs()));
+        if self.current.len() >= MIN_UTTER && peak > SPEECH_ON {
+            self.ready.push_back(std::mem::take(&mut self.current));
+            while self.ready.len() > MAX_READY {
+                self.ready.pop_front();
+            }
+        }
+        self.current.clear();
+        self.in_speech = false;
+        self.hangover = 0;
+        self.preroll.clear();
+    }
+
+    fn reset(&mut self) {
+        *self = Vad::default();
+    }
+}
+
+#[derive(Serialize, Default)]
+pub struct MeetingChunk {
+    /// base64 WAV of one complete utterance, empty when none is ready.
+    pub wav: String,
+    pub seconds: f32,
+    pub peak: f32,
+    pub device: String,
+    pub running: bool,
+    /// true while someone is mid-sentence (nothing to send yet).
+    pub speaking: bool,
+    pub queued: usize,
+}
+
 fn base64(bytes: &[u8]) -> String {
     const T: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut out = String::with_capacity((bytes.len() + 2) / 3 * 4);
     for chunk in bytes.chunks(3) {
-        let b = [
-            chunk[0],
-            *chunk.get(1).unwrap_or(&0),
-            *chunk.get(2).unwrap_or(&0),
-        ];
+        let b = [chunk[0], *chunk.get(1).unwrap_or(&0), *chunk.get(2).unwrap_or(&0)];
         let n = (b[0] as u32) << 16 | (b[1] as u32) << 8 | b[2] as u32;
         out.push(T[(n >> 18 & 63) as usize] as char);
         out.push(T[(n >> 12 & 63) as usize] as char);
@@ -27,31 +118,10 @@ fn base64(bytes: &[u8]) -> String {
     out
 }
 
-#[derive(Serialize, Default)]
-pub struct MeetingChunk {
-    /// base64 WAV, empty when there is nothing worth sending.
-    pub wav: String,
-    pub seconds: f32,
-    pub peak: f32,
-    pub device: String,
-    pub running: bool,
-}
-
-/// ~25 s of 16 kHz mono audio — the cap if the frontend stops draining.
-const MAX_SAMPLES: usize = TARGET_SAMPLE_RATE * 25;
-/// Don't hand back a chunk shorter than this (~0.5 s).
-const MIN_CHUNK_SAMPLES: usize = TARGET_SAMPLE_RATE / 2;
-/// A chunk whose peak is below this is treated as silence and dropped.
-const SILENCE_PEAK: f32 = 0.0025;
-
 pub struct AudioCaptureService {
     is_running: Arc<AtomicBool>,
-    /// The system-loopback stream — what is playing out of the speakers,
-    /// i.e. the other people on the call. The local microphone is never captured.
     loopback_stream: Option<Stream>,
-    /// Resampled 16 kHz mono PCM waiting to be transcribed.
-    meeting_pcm: Arc<Mutex<Vec<f32>>>,
-    loopback_rms: Arc<Mutex<f32>>,
+    vad: Arc<Mutex<Vad>>,
     device_name: String,
 }
 
@@ -65,72 +135,60 @@ impl AudioCaptureService {
         Self {
             is_running: Arc::new(AtomicBool::new(false)),
             loopback_stream: None,
-            meeting_pcm: Arc::new(Mutex::new(Vec::with_capacity(MAX_SAMPLES))),
-            loopback_rms: Arc::new(Mutex::new(0.0)),
+            vad: Arc::new(Mutex::new(Vad::default())),
             device_name: String::new(),
         }
     }
 
     /// (mic, loopback) — mic is always 0, the app does not open the microphone.
     pub fn get_audio_levels(&self) -> (f32, f32) {
-        (0.0, *self.loopback_rms.lock())
+        (0.0, self.vad.lock().rms)
     }
 
-    /// Drain the buffered call audio. `wav` is empty when there isn't enough
-    /// yet or it's silent; `peak` / `device` / `running` help the UI explain why.
+    /// Pop the next complete utterance as a WAV. Empty `wav` = nothing ready.
     pub fn take_chunk(&self) -> MeetingChunk {
         let running = self.is_running.load(Ordering::SeqCst);
-        let mut buf = self.meeting_pcm.lock();
-        let seconds = buf.len() as f32 / TARGET_SAMPLE_RATE as f32;
-
-        if buf.len() < MIN_CHUNK_SAMPLES {
-            return MeetingChunk {
-                seconds,
-                peak: *self.loopback_rms.lock(),
-                device: self.device_name.clone(),
-                running,
-                ..Default::default()
-            };
-        }
-        let samples = std::mem::take(&mut *buf);
-        drop(buf);
-
-        let peak = samples.iter().fold(0f32, |m, &s| m.max(s.abs()));
-        let mut chunk = MeetingChunk {
-            seconds: samples.len() as f32 / TARGET_SAMPLE_RATE as f32,
-            peak,
+        let mut vad = self.vad.lock();
+        let base = MeetingChunk {
+            peak: vad.rms,
             device: self.device_name.clone(),
             running,
+            speaking: vad.in_speech,
+            queued: vad.ready.len(),
             ..Default::default()
         };
-        if peak >= SILENCE_PEAK {
-            chunk.wav = base64(&encode_wav(&samples, TARGET_SAMPLE_RATE as u32));
-            info!("meeting chunk: {:.1}s peak={:.4} -> {} b64 bytes", chunk.seconds, peak, chunk.wav.len());
-        } else {
-            info!("meeting chunk: {:.1}s peak={:.4} (below {SILENCE_PEAK}, not sent)", chunk.seconds, peak);
+
+        let Some(samples) = vad.ready.pop_front() else {
+            return base;
+        };
+        drop(vad);
+
+        let peak = samples.iter().fold(0f32, |m, &s| m.max(s.abs()));
+        let seconds = samples.len() as f32 / SR as f32;
+        info!("utterance: {seconds:.1}s peak={peak:.4}");
+        MeetingChunk {
+            wav: base64(&encode_wav(&samples, SR as u32)),
+            seconds,
+            peak,
+            ..base
         }
-        chunk
     }
 
     pub fn start_capture(&mut self) -> Result<(), String> {
         if self.is_running.load(Ordering::SeqCst) {
             return Ok(());
         }
-        self.meeting_pcm.lock().clear();
+        self.vad.lock().reset();
 
         let host = cpal::default_host();
-
         if let Ok(devs) = host.output_devices() {
             let names: Vec<String> = devs.filter_map(|d| d.name().ok()).collect();
             info!("Output devices: {names:?}");
         }
 
-        // Capture the default *output* device in loopback mode. On Windows cpal
-        // adds AUDCLNT_STREAMFLAGS_LOOPBACK automatically for render endpoints.
         let output_dev = host
             .default_output_device()
             .ok_or_else(|| "No default output device — is anything playing sound?".to_string())?;
-
         self.device_name = output_dev.name().unwrap_or_default();
         info!("Default output (loopback target): '{}'", self.device_name);
 
@@ -155,8 +213,7 @@ impl AudioCaptureService {
     pub fn stop_capture(&mut self) {
         self.is_running.store(false, Ordering::SeqCst);
         self.loopback_stream = None;
-        self.meeting_pcm.lock().clear();
-        *self.loopback_rms.lock() = 0.0;
+        self.vad.lock().reset();
         info!("Loopback capture stopped.");
     }
 
@@ -170,34 +227,38 @@ impl AudioCaptureService {
         let config: StreamConfig = supported.into();
         let sample_rate = config.sample_rate.0 as usize;
         let channels = config.channels as usize;
-
         let err_fn = |err| error!("loopback stream error: {err:?}");
 
         let stream = match sample_format {
             SampleFormat::F32 => {
-                let pcm = self.meeting_pcm.clone();
-                let rms = self.loopback_rms.clone();
+                let vad = self.vad.clone();
                 let mut resampler = AudioResampler::new(sample_rate, channels);
                 device
                     .build_input_stream(
                         &config,
-                        move |data: &[f32], _: &_| ingest(data, &mut resampler, &pcm, &rms),
+                        move |data: &[f32], _: &_| {
+                            let mono = resampler.process(data);
+                            if !mono.is_empty() {
+                                vad.lock().feed(&mono);
+                            }
+                        },
                         err_fn,
                         None,
                     )
                     .map_err(|e| format!("build f32 loopback stream: {e:?}"))?
             }
             SampleFormat::I16 => {
-                let pcm = self.meeting_pcm.clone();
-                let rms = self.loopback_rms.clone();
+                let vad = self.vad.clone();
                 let mut resampler = AudioResampler::new(sample_rate, channels);
                 device
                     .build_input_stream(
                         &config,
                         move |data: &[i16], _: &_| {
-                            let f: Vec<f32> =
-                                data.iter().map(|&s| s as f32 / i16::MAX as f32).collect();
-                            ingest(&f, &mut resampler, &pcm, &rms);
+                            let f: Vec<f32> = data.iter().map(|&s| s as f32 / i16::MAX as f32).collect();
+                            let mono = resampler.process(&f);
+                            if !mono.is_empty() {
+                                vad.lock().feed(&mono);
+                            }
                         },
                         err_fn,
                         None,
@@ -208,30 +269,6 @@ impl AudioCaptureService {
         };
 
         Ok(stream)
-    }
-}
-
-fn ingest(
-    interleaved: &[f32],
-    resampler: &mut AudioResampler,
-    pcm: &Mutex<Vec<f32>>,
-    rms: &Mutex<f32>,
-) {
-    if interleaved.is_empty() {
-        return;
-    }
-    let sum: f32 = interleaved.iter().map(|&s| s * s).sum();
-    *rms.lock() = (sum / interleaved.len() as f32).sqrt();
-
-    let resampled = resampler.process(interleaved);
-    if resampled.is_empty() {
-        return;
-    }
-    let mut buf = pcm.lock();
-    buf.extend_from_slice(&resampled);
-    if buf.len() > MAX_SAMPLES {
-        let overflow = buf.len() - MAX_SAMPLES;
-        buf.drain(0..overflow);
     }
 }
 

@@ -198,11 +198,12 @@ export function Overlay() {
     });
     speechService.onStatus((s) => {
       if (s.kind === 'heard') setListenLine(s.text);
+      else if (s.kind === 'hearing') setListenLine('hearing them…');
       else if (s.kind === 'transcribing') setListenLine('transcribing…');
       else if (s.kind === 'silent')
         setListenLine(`no call audio on "${s.device}" — is the meeting playing through that output device?`);
       else if (s.kind === 'error') setListenLine(`transcription failed — ${s.detail}`);
-      else setListenLine('listening…');
+      else setListenLine('listening for the call…');
       setListenStatusKind(s.kind);
     });
   }, [runAsk]);
