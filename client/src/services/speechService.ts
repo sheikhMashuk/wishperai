@@ -60,7 +60,8 @@ function transcriptionTarget(provider: string, key: string, langIsEnglish: boole
       key,
     };
   }
-  const groq = ['whisper-large-v3-turbo', 'whisper-large-v3'];
+  // large-v3 is enabled for every Groq account; turbo is faster but some orgs block it.
+  const groq = ['whisper-large-v3', 'whisper-large-v3-turbo'];
   if (langIsEnglish) groq.push('distil-whisper-large-v3-en');
   return { url: 'https://api.groq.com/openai/v1/audio/transcriptions', models: groq, key };
 }
