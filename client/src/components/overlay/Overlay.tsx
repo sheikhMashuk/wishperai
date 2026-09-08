@@ -100,6 +100,8 @@ export function Overlay() {
   const [answers, setAnswers] = useState<Answer[]>(loadHistory);
   const [listening, setListening] = useState(false);
   const [interim, setInterim] = useState('');
+  const [listenLine, setListenLine] = useState('listening…');
+  const [listenStatusKind, setListenStatusKind] = useState<string>('waiting');
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -194,6 +196,15 @@ export function Overlay() {
       lastQuestion.current = text;
       void runAsk(text);
     });
+    speechService.onStatus((s) => {
+      if (s.kind === 'heard') setListenLine(s.text);
+      else if (s.kind === 'transcribing') setListenLine('transcribing…');
+      else if (s.kind === 'silent')
+        setListenLine(`no call audio on "${s.device}" — is the meeting playing through that output device?`);
+      else if (s.kind === 'error') setListenLine(`transcription failed — ${s.detail}`);
+      else setListenLine('listening…');
+      setListenStatusKind(s.kind);
+    });
   }, [runAsk]);
 
   /* ---- audio level + timer while listening ----------------------------- */
@@ -249,6 +260,8 @@ export function Overlay() {
     }
     setListenError(null);
     setInterim('');
+    setListenLine('listening…');
+    setListenStatusKind('waiting');
     listenStart.current = Date.now();
     setElapsed(0);
     setListening(true);
@@ -401,9 +414,21 @@ export function Overlay() {
             {/* ---- live transcript (the other side of the call) ---- */}
             {listening && (
               <div className="no-drag flex items-center gap-2 border-t border-[var(--line)] px-2.5 py-1.5 text-[11px]">
-                <span className="shrink-0 font-medium text-[var(--accent)]">Them</span>
-                <span className="truncate text-[var(--text-dim)]">
-                  {interim || <span className="text-[var(--text-faint)]">listening to the call…</span>}
+                <span
+                  className={`shrink-0 font-medium ${
+                    listenStatusKind === 'error' || listenStatusKind === 'silent'
+                      ? 'text-[var(--danger)]'
+                      : 'text-[var(--accent)]'
+                  }`}
+                >
+                  {listenStatusKind === 'error' ? 'Audio' : 'Them'}
+                </span>
+                <span
+                  className={`truncate ${
+                    listenStatusKind === 'heard' ? 'text-[var(--text-dim)]' : 'text-[var(--text-faint)]'
+                  }`}
+                >
+                  {listenLine}
                 </span>
               </div>
             )}

@@ -1,8 +1,7 @@
 use std::sync::Arc;
 use parking_lot::Mutex;
-use tauri::ipc::Response;
 use tauri::{Emitter, State, WebviewWindow};
-use crate::audio::AudioCaptureService;
+use crate::audio::{AudioCaptureService, MeetingChunk};
 use crate::stealth;
 
 pub struct AppState {
@@ -72,11 +71,11 @@ pub fn get_audio_levels(state: State<AppState>) -> (f32, f32) {
     state.audio_service.lock().get_audio_levels()
 }
 
-/// Drain the buffered call audio as a WAV. Empty response = nothing new / silence.
+/// Drain the buffered call audio. `wav` is a base64 string, empty when there is
+/// nothing new or it's silent; the other fields let the UI say why.
 #[tauri::command]
-pub fn take_meeting_audio(state: State<AppState>) -> Response {
-    let wav = state.audio_service.lock().take_wav().unwrap_or_default();
-    Response::new(wav)
+pub fn take_meeting_audio(state: State<AppState>) -> MeetingChunk {
+    state.audio_service.lock().take_chunk()
 }
 
 use keyring::Entry;

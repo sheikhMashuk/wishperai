@@ -1,4 +1,4 @@
 pub mod capture;
 pub mod resampler;
 
-pub use capture::AudioCaptureService;
+pub use capture::{AudioCaptureService, MeetingChunk};

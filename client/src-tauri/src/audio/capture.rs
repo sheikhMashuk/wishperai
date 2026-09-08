@@ -2,17 +2,47 @@ use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{Device, SampleFormat, Stream, StreamConfig};
 use log::{error, info, warn};
 use parking_lot::Mutex;
+use serde::Serialize;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
 use super::resampler::{AudioResampler, TARGET_SAMPLE_RATE};
 
+/// Base64 alphabet, no padding needed for the frontend's `atob` (we pad).
+fn base64(bytes: &[u8]) -> String {
+    const T: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut out = String::with_capacity((bytes.len() + 2) / 3 * 4);
+    for chunk in bytes.chunks(3) {
+        let b = [
+            chunk[0],
+            *chunk.get(1).unwrap_or(&0),
+            *chunk.get(2).unwrap_or(&0),
+        ];
+        let n = (b[0] as u32) << 16 | (b[1] as u32) << 8 | b[2] as u32;
+        out.push(T[(n >> 18 & 63) as usize] as char);
+        out.push(T[(n >> 12 & 63) as usize] as char);
+        out.push(if chunk.len() > 1 { T[(n >> 6 & 63) as usize] as char } else { '=' });
+        out.push(if chunk.len() > 2 { T[(n & 63) as usize] as char } else { '=' });
+    }
+    out
+}
+
+#[derive(Serialize, Default)]
+pub struct MeetingChunk {
+    /// base64 WAV, empty when there is nothing worth sending.
+    pub wav: String,
+    pub seconds: f32,
+    pub peak: f32,
+    pub device: String,
+    pub running: bool,
+}
+
 /// ~25 s of 16 kHz mono audio — the cap if the frontend stops draining.
 const MAX_SAMPLES: usize = TARGET_SAMPLE_RATE * 25;
-/// Don't hand back a chunk shorter than this (~0.6 s).
-const MIN_CHUNK_SAMPLES: usize = TARGET_SAMPLE_RATE * 6 / 10;
+/// Don't hand back a chunk shorter than this (~0.5 s).
+const MIN_CHUNK_SAMPLES: usize = TARGET_SAMPLE_RATE / 2;
 /// A chunk whose peak is below this is treated as silence and dropped.
-const SILENCE_PEAK: f32 = 0.006;
+const SILENCE_PEAK: f32 = 0.0025;
 
 pub struct AudioCaptureService {
     is_running: Arc<AtomicBool>,
@@ -22,6 +52,7 @@ pub struct AudioCaptureService {
     /// Resampled 16 kHz mono PCM waiting to be transcribed.
     meeting_pcm: Arc<Mutex<Vec<f32>>>,
     loopback_rms: Arc<Mutex<f32>>,
+    device_name: String,
 }
 
 // Safety: the cpal Stream handle lives behind the AppState mutex and is only
@@ -36,6 +67,7 @@ impl AudioCaptureService {
             loopback_stream: None,
             meeting_pcm: Arc::new(Mutex::new(Vec::with_capacity(MAX_SAMPLES))),
             loopback_rms: Arc::new(Mutex::new(0.0)),
+            device_name: String::new(),
         }
     }
 
@@ -44,21 +76,40 @@ impl AudioCaptureService {
         (0.0, *self.loopback_rms.lock())
     }
 
-    /// Drain the buffered call audio as a 16-bit PCM WAV.
-    /// Returns `None` when there isn't enough audio yet, or it's silent.
-    pub fn take_wav(&self) -> Option<Vec<u8>> {
+    /// Drain the buffered call audio. `wav` is empty when there isn't enough
+    /// yet or it's silent; `peak` / `device` / `running` help the UI explain why.
+    pub fn take_chunk(&self) -> MeetingChunk {
+        let running = self.is_running.load(Ordering::SeqCst);
         let mut buf = self.meeting_pcm.lock();
+        let seconds = buf.len() as f32 / TARGET_SAMPLE_RATE as f32;
+
         if buf.len() < MIN_CHUNK_SAMPLES {
-            return None;
+            return MeetingChunk {
+                seconds,
+                peak: *self.loopback_rms.lock(),
+                device: self.device_name.clone(),
+                running,
+                ..Default::default()
+            };
         }
         let samples = std::mem::take(&mut *buf);
         drop(buf);
 
         let peak = samples.iter().fold(0f32, |m, &s| m.max(s.abs()));
-        if peak < SILENCE_PEAK {
-            return None;
+        let mut chunk = MeetingChunk {
+            seconds: samples.len() as f32 / TARGET_SAMPLE_RATE as f32,
+            peak,
+            device: self.device_name.clone(),
+            running,
+            ..Default::default()
+        };
+        if peak >= SILENCE_PEAK {
+            chunk.wav = base64(&encode_wav(&samples, TARGET_SAMPLE_RATE as u32));
+            info!("meeting chunk: {:.1}s peak={:.4} -> {} b64 bytes", chunk.seconds, peak, chunk.wav.len());
+        } else {
+            info!("meeting chunk: {:.1}s peak={:.4} (below {SILENCE_PEAK}, not sent)", chunk.seconds, peak);
         }
-        Some(encode_wav(&samples, TARGET_SAMPLE_RATE as u32))
+        chunk
     }
 
     pub fn start_capture(&mut self) -> Result<(), String> {
@@ -69,18 +120,26 @@ impl AudioCaptureService {
 
         let host = cpal::default_host();
 
+        if let Ok(devs) = host.output_devices() {
+            let names: Vec<String> = devs.filter_map(|d| d.name().ok()).collect();
+            info!("Output devices: {names:?}");
+        }
+
         // Capture the default *output* device in loopback mode. On Windows cpal
         // adds AUDCLNT_STREAMFLAGS_LOOPBACK automatically for render endpoints.
         let output_dev = host
             .default_output_device()
             .ok_or_else(|| "No default output device — is anything playing sound?".to_string())?;
 
+        self.device_name = output_dev.name().unwrap_or_default();
+        info!("Default output (loopback target): '{}'", self.device_name);
+
         match self.build_loopback_stream(&output_dev) {
             Ok(stream) => {
                 stream
                     .play()
                     .map_err(|e| format!("Failed to start loopback capture: {e:?}"))?;
-                info!("Loopback capture started on '{}'.", output_dev.name().unwrap_or_default());
+                info!("Loopback capture started on '{}'.", self.device_name);
                 self.loopback_stream = Some(stream);
             }
             Err(e) => {
