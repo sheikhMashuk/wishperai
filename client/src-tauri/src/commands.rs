@@ -1,5 +1,6 @@
 use std::sync::Arc;
 use parking_lot::Mutex;
+use tauri::ipc::Response;
 use tauri::{Emitter, State, WebviewWindow};
 use crate::audio::AudioCaptureService;
 use crate::stealth;
@@ -69,6 +70,13 @@ pub fn stop_audio_capture(state: State<AppState>) -> Result<(), String> {
 #[tauri::command]
 pub fn get_audio_levels(state: State<AppState>) -> (f32, f32) {
     state.audio_service.lock().get_audio_levels()
+}
+
+/// Drain the buffered call audio as a WAV. Empty response = nothing new / silence.
+#[tauri::command]
+pub fn take_meeting_audio(state: State<AppState>) -> Response {
+    let wav = state.audio_service.lock().take_wav().unwrap_or_default();
+    Response::new(wav)
 }
 
 use keyring::Entry;

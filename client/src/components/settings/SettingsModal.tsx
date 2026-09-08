@@ -237,7 +237,7 @@ export function SettingsModal({ settings, onChange, onClose }: Props) {
 
           {/* language */}
           <div>
-            <span className={label}>Speech language</span>
+            <span className={label}>Call language</span>
             <select
               className={field}
               value={settings.speechLanguage}
@@ -249,6 +249,10 @@ export function SettingsModal({ settings, onChange, onClose }: Props) {
                 </option>
               ))}
             </select>
+            <p className="mt-1 text-[10.5px] text-[var(--text-faint)]">
+              <b>Listen</b> transcribes the call's system audio (the other people, not your mic) via Whisper —
+              it needs a <b>Groq</b> or <b>OpenAI</b> key. Other providers: type the question.
+            </p>
           </div>
 
           {/* opacity */}

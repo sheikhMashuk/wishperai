@@ -39,6 +39,10 @@ First run compiles the Rust side (~1–2 min), then a frameless window opens.
 3. Optionally paste your résumé / project notes into the context box.
 4. Hit **Listen**, or type a question and press Enter.
 
+**Listen** captures the call's *system audio* — the other people, via WASAPI loopback — and
+transcribes it with Whisper. Your microphone is never opened. Transcription uses your **Groq**
+or **OpenAI** key; with other providers, type the question instead.
+
 Conversation history is kept locally (last 40 answers) and restored on the next launch.
 The **Clear** button wipes it.
 

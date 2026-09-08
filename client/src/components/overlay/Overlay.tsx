@@ -107,6 +107,7 @@ export function Overlay() {
   const [clickThrough, setClickThrough] = useState(false);
   const [micLevel, setMicLevel] = useState(0);
   const [elapsed, setElapsed] = useState(0);
+  const [listenError, setListenError] = useState<string | null>(null);
 
   const listenStart = useRef(0);
   const lastQuestion = useRef('');
@@ -235,12 +236,22 @@ export function Overlay() {
     if (listening) {
       await speechService.stop();
       setListening(false);
-    } else {
-      listenStart.current = Date.now();
-      setElapsed(0);
-      await speechService.start();
-      setListening(true);
+      return;
     }
+    const res = await speechService.start({
+      provider: settings.provider,
+      apiKey: settings.apiKey,
+      language: settings.speechLanguage,
+    });
+    if (!res.ok) {
+      setListenError(res.reason ?? 'Could not start listening.');
+      return;
+    }
+    setListenError(null);
+    setInterim('');
+    listenStart.current = Date.now();
+    setElapsed(0);
+    setListening(true);
   };
 
   const toggleClickThrough = async () => {
@@ -323,7 +334,7 @@ export function Overlay() {
             >
               <Trash2 className="h-3.5 w-3.5" />
             </IconBtn>
-            <IconBtn title="Settings" onClick={() => setShowSettings(true)}>
+            <IconBtn title="Settings" onClick={() => { setShowSettings(true); setListenError(null); }}>
               <Settings2 className="h-3.5 w-3.5" />
             </IconBtn>
             <IconBtn title={collapsed ? 'Expand (Ctrl+\\)' : 'Collapse (Ctrl+\\)'} onClick={() => setCollapsed((c) => !c)}>
@@ -349,6 +360,15 @@ export function Overlay() {
               </button>
             )}
 
+            {listenError && (
+              <button
+                onClick={() => setListenError(null)}
+                className="no-drag flex items-center justify-center gap-1.5 border-y border-[var(--danger)]/25 bg-[var(--danger)]/10 px-3 py-1 text-[11px] text-[var(--danger)] transition-colors hover:bg-[var(--danger)]/15"
+              >
+                {listenError} <span className="text-[var(--text-faint)]">(tap to dismiss)</span>
+              </button>
+            )}
+
             {/* ---- chips ---- */}
             <div className="no-drag flex gap-1.5 overflow-x-auto border-t border-[var(--line)] px-2.5 py-1.5 scroll-thin">
               {CHIPS.map((c) => (
@@ -369,8 +389,8 @@ export function Overlay() {
                 <div className="flex h-full min-h-[140px] flex-col items-center justify-center gap-1.5 text-center">
                   <MessageSquareText className="h-6 w-6 text-[var(--text-faint)]" />
                   <p className="text-[12.5px] text-[var(--text-dim)]">Ready</p>
-                  <p className="max-w-[240px] text-[11px] text-[var(--text-faint)]">
-                    Hit <span className="text-[var(--text-dim)]">Listen</span> to catch questions automatically, or type one below.
+                  <p className="max-w-[250px] text-[11px] text-[var(--text-faint)]">
+                    <span className="text-[var(--text-dim)]">Listen</span> transcribes the other people on the call and answers their questions. Or type one below.
                   </p>
                 </div>
               ) : (
@@ -378,12 +398,12 @@ export function Overlay() {
               )}
             </div>
 
-            {/* ---- live transcript ---- */}
+            {/* ---- live transcript (the other side of the call) ---- */}
             {listening && (
               <div className="no-drag flex items-center gap-2 border-t border-[var(--line)] px-2.5 py-1.5 text-[11px]">
-                <span className="shrink-0 font-medium text-[var(--accent)]">Live</span>
+                <span className="shrink-0 font-medium text-[var(--accent)]">Them</span>
                 <span className="truncate text-[var(--text-dim)]">
-                  {interim || <span className="text-[var(--text-faint)]">listening…</span>}
+                  {interim || <span className="text-[var(--text-faint)]">listening to the call…</span>}
                 </span>
               </div>
             )}

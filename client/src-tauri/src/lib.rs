@@ -120,6 +120,7 @@ pub fn run() {
             commands::start_audio_capture,
             commands::stop_audio_capture,
             commands::get_audio_levels,
+            commands::take_meeting_audio,
             commands::get_api_key,
             commands::set_api_key
         ])
