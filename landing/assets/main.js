@@ -22,8 +22,8 @@
     head.className = 'site-head';
     head.innerHTML = `
       <div class="wrap">
-        <a class="brand" href="/" aria-label="WhisperAI home">
-          <span class="mark">${markSvg}</span> WhisperAI
+        <a class="brand" href="/" aria-label="WishperAI home">
+          <span class="mark">${markSvg}</span> WishperAI
         </a>
         <nav class="nav">
           ${NAV.map(([id, label, href]) =>
@@ -37,7 +37,7 @@
       <div class="mobile-nav" id="mnav">
         ${NAV.map(([id, label, href]) =>
           `<a href="${href}"${id === page ? ' aria-current="page"' : ''}>${label}</a>`).join('')}
-        <a class="btn btn-primary" href="/download">Get WhisperAI</a>
+        <a class="btn btn-primary" href="/download">Get WishperAI</a>
       </div>`;
 
     const setIco = (open) => {
@@ -93,7 +93,7 @@
       <div class="wrap">
         <div class="foot-grid">
           <div>
-            <a class="brand" href="/"><span class="mark">${markSvg}</span> WhisperAI</a>
+            <a class="brand" href="/"><span class="mark">${markSvg}</span> WishperAI</a>
             <p class="foot-note">A desktop overlay that helps in the moment and disappears from the recording. Built by one engineer, no account, no telemetry.</p>
           </div>
           <div>
@@ -116,7 +116,7 @@
           </div>
         </div>
         <div class="foot-bottom">
-          <span>© ${YEAR} WhisperAI</span>
+          <span>© ${YEAR} WishperAI</span>
           <span>Windows 10/11 · macOS · Rust + Tauri</span>
           <span>Use it honestly.</span>
         </div>

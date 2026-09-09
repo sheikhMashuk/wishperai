@@ -1,4 +1,4 @@
-# WhisperAI
+# WishperAI
 
 A desktop overlay that hears a live conversation, drafts an answer you can say
 out loud, and stays out of every screen share. Bring your own model key.
@@ -28,7 +28,7 @@ npm run tauri dev
 
 First run compiles the Rust side (~1–2 min), then a frameless window opens.
 
-**From VS Code:** `Ctrl+Shift+B`, or **Terminal → Run Task… → "WhisperAI: run (dev)"**.
+**From VS Code:** `Ctrl+Shift+B`, or **Terminal → Run Task… → "WishperAI: run (dev)"**.
 (Tasks for a release build, typecheck, and the landing preview are in `.vscode/tasks.json`.)
 
 ### Set it up

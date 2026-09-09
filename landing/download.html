@@ -3,27 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light" />
-  <title>Download — WhisperAI</title>
-  <meta name="description" content="Download WhisperAI for Windows or macOS, or build it from source. System requirements, first-run setup, and the keyboard shortcuts." />
-  <meta property="og:title" content="WhisperAI — download" />
+  <meta name="color-scheme" content="dark" />
+  <title>Download — WishperAI</title>
+  <meta name="description" content="Download WishperAI for Windows or macOS, or build it from source. System requirements, first-run setup, and the keyboard shortcuts." />
+  <meta property="og:title" content="WishperAI — download" />
   <meta property="og:description" content="Get it for Windows or macOS. Two-minute setup, bring your own key." />
   <link rel="canonical" href="https://wishperai.dev/download" />
   <meta property="og:url" content="https://wishperai.dev/download" />
-  <meta property="og:site_name" content="WhisperAI" />
+  <meta property="og:site_name" content="WishperAI" />
   <meta property="og:image" content="https://wishperai.dev/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="WhisperAI — a quiet second brain for the questions you don't see coming." />
+  <meta property="og:image:alt" content="WishperAI — a quiet second brain for the questions you don't see coming." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://wishperai.dev/og.png" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/site.css?v=11" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/site.css?v=12" />
   <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js" defer></script>
-  <script src="/assets/main.js?v=11" defer></script>
+  <script src="/assets/main.js?v=12" defer></script>
 </head>
 <body data-page="download">
   <div id="site-head"></div>
@@ -32,7 +32,7 @@
     <header class="hero wrap" style="padding-top: clamp(7rem, 14vw, 9rem)">
       <div class="hero__aura"></div>
       <p class="eyebrow reveal">Download</p>
-      <h1 class="display reveal d1" style="max-width:20ch">Two minutes from download to first answer.</h1>
+      <h1 class="display reveal d1" style="max-width:16ch">Two minutes from download to first answer.</h1>
       <p class="lede reveal d2" style="max-width:44ch">Free, source-available, no account. You'll need one API key — free tiers are fine.</p>
       <div class="hero__cta reveal d3">
         <a class="btn btn-primary" href="https://github.com/sheikhMashuk/wishperai" target="_blank" rel="noopener">
@@ -40,7 +40,7 @@
         </a>
         <a class="btn btn-ghost" href="#source"><i data-lucide="terminal"></i> Build from source</a>
       </div>
-      <p class="reveal d3" style="margin-top:1rem;font-size:.85rem;color:var(--ink-3);max-width:44ch">
+      <p class="reveal d3" style="margin-top:1rem;font-size:.85rem;color:var(--text-3);max-width:44ch">
         Prebuilt installers aren't published yet — clone and build it, it's two commands. Star or watch
         the repo and you'll see the first release when it lands.
       </p>
@@ -62,7 +62,7 @@
     <section class="section wrap" id="setup" style="border-top:1px solid var(--line)">
       <div class="prose stack reveal" style="margin-bottom:2rem">
         <h2 class="display">First run</h2>
-        <p style="color:var(--ink-2)">The window opens centred, frameless, on top. Drag it by the bar to wherever you want it.</p>
+        <p style="color:var(--text-2)">The window opens centred, frameless, on top. Drag it by the bar to wherever you want it.</p>
       </div>
       <ol class="steps reveal">
         <li>
@@ -87,7 +87,7 @@
     <!-- hotkeys -->
     <section class="section wrap" id="hotkeys" style="border-top:1px solid var(--line)">
       <div class="prose stack reveal" style="margin-bottom:2rem"><h2 class="display">Keyboard shortcuts</h2>
-        <p style="color:var(--ink-2)">Global — they work even when the call window or your editor has focus.</p>
+        <p style="color:var(--text-2)">Global — they work even when the call window or your editor has focus.</p>
       </div>
       <dl class="spec reveal">
         <div><dt><kbd>Ctrl+Shift+H</kbd></dt><dd>Hide the overlay completely, or bring it back. The panic button.</dd></div>
@@ -95,7 +95,7 @@
         <div><dt><kbd>Ctrl+Shift+T</kbd></dt><dd>Toggle click-through — the mouse stops hitting the overlay.</dd></div>
         <div style="border:0"><dt><kbd>Ctrl+Shift+Q</kbd></dt><dd>Quit immediately.</dd></div>
       </dl>
-      <p class="reveal" style="margin-top:1rem;color:var(--ink-3);font-size:.9rem">On some keyboards <kbd>Ctrl+Shift+H</kbd> clashes; <kbd>Alt+Shift+H</kbd> does the same thing.</p>
+      <p class="reveal" style="margin-top:1rem;color:var(--text-3);font-size:.9rem">On some keyboards <kbd>Ctrl+Shift+H</kbd> clashes; <kbd>Alt+Shift+H</kbd> does the same thing.</p>
     </section>
 
     <!-- from source -->
@@ -111,7 +111,7 @@
 cd wishperai/client
 npm install
 npm run tauri dev      # or: npm run tauri build</pre>
-          <p style="font-size:.85rem;color:var(--ink-3)">Needs Node 20.19+ and a Rust toolchain.</p>
+          <p style="font-size:.85rem;color:var(--text-3)">Needs Node 20.19+ and a Rust toolchain.</p>
         </div>
       </div>
     </section>
