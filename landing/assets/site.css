@@ -32,15 +32,16 @@ ul, ol { list-style: none; padding: 0; }
 
   --ink:       #14130f;
   --ink-2:     #3b372e;   /* body, 6.5:1 on paper */
-  --ink-3:     #4f4a3a;   /* labels, 4.8:1 on paper */
+  --ink-3:     #4c4737;   /* labels, 5.4:1 on paper, 4.7:1 on paper-lo */
 
   --line:      #a8a38b;
   --line-2:    #8b8571;
+  --sep:       #726c58;   /* meta separators, 3.1:1 */
 
   --stamp:     #9e2116;
   --stamp-bg:  rgba(158, 33, 22, .085);
 
-  --ok:        #3d5a38;
+  --ok:        #37502f;
   --warn:      #7a5c13;
 
   /* the app itself, sitting on the page like a photographic plate */
@@ -166,12 +167,11 @@ html.motion .redact::after { animation: strike .46s var(--mech) 1.05s backwards;
   text-transform: uppercase; letter-spacing: .14em;
   font-size: .74rem; padding: .3rem .75rem;
   transform: rotate(-3.5deg);
-  opacity: .88;
 }
 html.motion .stamp { animation: press .55s var(--press) 1.5s backwards; }
 @keyframes press {
   from { transform: rotate(-13deg) scale(1.7); opacity: 0; }
-  60%  { opacity: .88; }
+  60%  { opacity: 1; }
 }
 
 /* ---------- layout ---------- */
@@ -279,7 +279,7 @@ html.motion .stamp { animation: press .55s var(--press) 1.5s backwards; }
   font-size: .76rem; color: var(--ink-3);
   text-transform: uppercase; letter-spacing: .07em;
 }
-.hero__meta span:nth-child(even) { color: var(--line-2); }
+.hero__meta span:nth-child(even) { color: var(--sep); }
 
 /* headline lines feed in like paper through a platen */
 .rise > * { display: block; }
@@ -379,10 +379,21 @@ pre.code {
 .pin { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 7vw, 6rem); align-items: start; }
 .pin > *, .pin__card { min-width: 0; }
 .pin__steps { display: grid; }
-.pin__step { padding-block: 26vh; transition: opacity .45s var(--ease); }
+.pin__step {
+  padding-block: 26vh; padding-left: 1.3rem;
+  border-left: 2px solid transparent;
+  transition: border-color .45s var(--ease);
+}
 /* gated: without JS the steps and every card stay plainly visible */
-html.pin-ready .pin__step { opacity: .45; }
-html.pin-ready .pin__step[data-active] { opacity: 1; }
+/* State is carried by a rule in the margin and by colour, never by opacity:
+   opacity composites the whole subtree, so a dimmed step drags its eyebrow
+   down with it (stamp red at .82 is 3.62:1). Every state below is full
+   strength and clears WCAG AA on its own. */
+html.pin-ready .pin__step[data-active] { border-left-color: var(--stamp); }
+html.pin-ready .pin__step .eyebrow { color: var(--ink-3); transition: color .45s var(--ease); }
+html.pin-ready .pin__step[data-active] .eyebrow { color: var(--stamp); }
+html.pin-ready .pin__step h3 { color: var(--ink-2); transition: color .45s var(--ease); }
+html.pin-ready .pin__step[data-active] h3 { color: var(--ink); }
 .pin__step .eyebrow { display: block; margin-bottom: .7rem; }
 .pin__step h3 { font-size: clamp(1.4rem, 2.5vw, 1.9rem); margin-bottom: .8rem; }
 .pin__step p { color: var(--ink-2); font-size: .93rem; line-height: 1.72; }
@@ -535,7 +546,7 @@ html.pin-ready .pin__card[data-active] { opacity: 1; transform: none; pointer-ev
 .foot-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2.25rem; }
 .foot-grid h4 { font-size: .73rem; font-family: var(--display); font-weight: 700; letter-spacing: .17em; text-transform: uppercase; color: var(--ink-3); margin-bottom: .9rem; }
 .foot-grid a { display: block; padding: .28rem 0; color: var(--ink-2); font-size: .85rem; transition: color .15s; }
-.foot-grid a:hover { color: var(--stamp); }
+.foot-grid a:hover { color: var(--ink); }
 .foot-note { color: var(--ink-3); font-size: .83rem; max-width: 32ch; line-height: 1.68; margin-top: .8rem; }
 .foot-bottom {
   margin-top: 2.5rem; padding-top: 1.3rem; border-top: 1px solid var(--line);
