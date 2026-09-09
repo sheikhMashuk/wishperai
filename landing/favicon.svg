@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <!-- a line of testimony, struck from the record, and the line after it -->
-  <rect width="32" height="32" rx="7" fill="#08080a"/>
-  <rect x="6" y="7" width="14" height="2.5" fill="#6ba4ff" fill-opacity=".5"/>
-  <rect x="6" y="13.25" width="20" height="5.5" fill="#6ba4ff"/>
-  <rect x="6" y="22.5" width="10" height="2.5" fill="#6ba4ff" fill-opacity=".5"/>
+  <rect width="32" height="32" fill="#cbc6b0"/>
+  <rect x="6" y="7" width="14" height="2.5" fill="#14130f" fill-opacity=".5"/>
+  <rect x="6" y="13.25" width="20" height="5.5" fill="#14130f"/>
+  <rect x="6" y="22.5" width="10" height="2.5" fill="#14130f" fill-opacity=".5"/>
 </svg>

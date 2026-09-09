@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="light" />
   <title>Stealth &amp; privacy — WishperAI</title>
   <meta name="description" content="How WishperAI stays out of screen shares, what it captures, where your data goes, and the honest limits of all of it." />
   <meta property="og:title" content="WishperAI — stealth & privacy" />
@@ -20,10 +20,11 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/site.css?v=12" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/site.css?v=13" />
+  <script>try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("motion")}catch(e){}</script>
   <script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.min.js" defer></script>
-  <script src="/assets/main.js?v=12" defer></script>
+  <script src="/assets/main.js?v=13" defer></script>
 </head>
 <body data-page="security">
   <div id="site-head"></div>
@@ -45,14 +46,14 @@
     <section class="section wrap" id="capture" style="border-top:1px solid var(--line)">
       <div class="prose stack reveal">
         <h2 class="display">How the capture exclusion works</h2>
-        <p style="color:var(--text-2)">
+        <p style="color:var(--ink-2)">
           On Windows, every window can set a display-affinity flag that the Desktop Window Manager reads
           when it composes a capture frame. WishperAI sets
           <code>SetWindowDisplayAffinity(hwnd, WDA_EXCLUDEFROMCAPTURE)</code> the moment its window is
           created. From then on the compositor renders that window to your monitor but omits it from any
           buffer handed to a capture API.
         </p>
-        <p style="color:var(--text-2)">
+        <p style="color:var(--ink-2)">
           That's the same mechanism a lot of DRM video players and password managers use. It isn't a
           trick or an overlay hack — it's the OS honouring a request. macOS has an equivalent
           window-level flag, and the app sets it on that platform too.
@@ -60,12 +61,12 @@
       </div>
 
       <div class="callout reveal" style="margin-top:2rem">
-        <p style="color:#fff;font-weight:500">What that covers</p>
+        <p style="color:var(--ink);font-weight:500">What that covers</p>
         <p>Zoom, Google Meet, Microsoft Teams and Webex screen share — whether they share the whole desktop or a single window. OBS Studio and other recorders built on the same capture APIs. The Windows Game Bar and Snipping Tool. Most remote-desktop software.</p>
       </div>
 
-      <div class="callout reveal" style="margin-top:1rem;border-left-color:var(--warn);background:rgba(230,180,94,.05)">
-        <p style="color:#fff;font-weight:500">What it can't cover</p>
+      <div class="callout reveal" style="margin-top:1rem;border-left-color:var(--warn);background:rgba(122,92,19,.07)">
+        <p style="color:var(--ink);font-weight:500">What it can't cover</p>
         <p>A second camera or a phone pointed at your screen — that's just a photo of a monitor. A managed work laptop with a monitoring agent that captures at a lower level than DWM. A hardware capture card between your GPU and a second display. If any of those are in play, assume nothing is hidden.</p>
       </div>
     </section>
@@ -100,7 +101,7 @@
     <section class="section wrap" id="data" style="border-top:1px solid var(--line)">
       <div class="prose stack reveal">
         <h2 class="display">Where your data goes</h2>
-        <p style="color:var(--text-2)">
+        <p style="color:var(--ink-2)">
           The short version: from your machine to the model provider you chose, and nowhere else. There
           is no WishperAI account, no WishperAI server, and no analytics.
         </p>
@@ -112,7 +113,7 @@
         <div><dt>prompts &amp; answers</dt><dd>Sent directly to your provider's endpoint (or your local Ollama). Their retention policy applies, not ours — we don't have one because we never see them.</dd></div>
         <div style="border:0"><dt>telemetry</dt><dd>None. No crash reporting, no usage pings, no update check that phones home with an id.</dd></div>
       </dl>
-      <p class="reveal" style="margin-top:1.5rem;color:var(--text-3);font-size:.9rem">
+      <p class="reveal" style="margin-top:1.5rem;color:var(--ink-3);font-size:.9rem">
         The client is source-available on <a href="https://github.com/sheikhMashuk/wishperai" target="_blank" rel="noopener">GitHub</a>. The network calls it makes are exactly the ones listed above; you can read them.
       </p>
     </section>
