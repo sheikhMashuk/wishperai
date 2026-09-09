@@ -19,11 +19,14 @@ ul, ol { list-style: none; padding: 0; }
 
 /* ---------- tokens ---------- */
 :root {
+  /* this design is a single committed light world. without this, a browser in
+     dark mode force-darkens it and invents an unreadable half-inverted theme. */
+  color-scheme: light;
+
   /* paper stock */
   --paper:     #cbc6b0;
   --paper-2:   #d5d0bc;   /* raised — cards, panels */
-  --paper-3:   #c0ba a2;  /* recessed */
-  --paper-3:   #c0baa2;
+  --paper-3:   #c0baa2;   /* recessed */
 
   /* ink */
   --ink:       #14130f;
@@ -413,7 +416,7 @@ pre.code {
 .pin__step { padding-block: 26vh; transition: opacity .5s var(--ease); }
 /* the dimming and the card swap only exist once the driver is live — without JS
    the steps and every card stay plainly visible instead of fading to nothing */
-html.pin-ready .pin__step { opacity: .32; }
+html.pin-ready .pin__step { opacity: .5; }
 html.pin-ready .pin__step[data-active] { opacity: 1; }
 .pin__step .eyebrow { display: block; margin-bottom: .7rem; }
 .pin__step h3 {
