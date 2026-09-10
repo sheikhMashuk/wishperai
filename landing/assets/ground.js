@@ -73,8 +73,12 @@
     addEventListener('resize', size, { passive: true });
 
     const line = '#243a52';
+    const ROWS = 18;
     const draw = (now) => {
       const t = (now - t0) / 1000;
+      // phase advances with the page: scrolling down flies you forward
+      // through the grid, with a slow idle drift so it's alive at rest
+      const phase = t * 0.02 + scrollY * 0.00075;
       ctx.clearRect(0, 0, w, h);
       const horizon = h * 0.42;
       const vpx = w / 2;
@@ -90,11 +94,11 @@
         ctx.lineTo(fx, h);
         ctx.stroke();
       }
-      // horizontals scrolling toward the viewer
-      for (let i = 0; i < 16; i++) {
-        const p = ((i / 16) + (t * 0.06) % (1 / 16)) % 1;
-        const y = horizon + Math.pow(p, 2.4) * (h - horizon);
-        ctx.globalAlpha = 0.5 * (1 - p) + 0.06;
+      // horizontals rushing from the horizon toward and past the viewer
+      for (let i = 0; i < ROWS; i++) {
+        const p = ((i / ROWS) + phase) % 1;
+        const y = horizon + Math.pow(p, 2.6) * (h - horizon);
+        ctx.globalAlpha = 0.55 * (1 - p) + 0.05;
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(w, y);

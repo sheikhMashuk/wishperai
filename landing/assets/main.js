@@ -162,11 +162,24 @@
       activate(best);
     };
 
-    let queued = false;
+    // Primary driver: an IntersectionObserver watching each step cross a thin
+    // band ~42% down the viewport. This fires on layout intersection, so it
+    // works even where plain scroll events are throttled or suppressed.
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        () => pick(),
+        { rootMargin: '-42% 0px -56% 0px', threshold: [0, 1] },
+      );
+      steps.forEach((s) => io.observe(s));
+    }
+    // Fallback: also pick straight off the scroll event, lightly throttled and
+    // not behind requestAnimationFrame.
+    let last = 0;
     const onPin = () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(() => { pick(); queued = false; });
+      const now = performance.now();
+      if (now - last < 60) return;
+      last = now;
+      pick();
     };
     pick();
     window.addEventListener('scroll', onPin, { passive: true });

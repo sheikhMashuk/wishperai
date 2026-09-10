@@ -68,14 +68,14 @@ ul, ol { list-style: none; padding: 0; }
 }
 
 /* ---------- base ---------- */
-html { scroll-behavior: smooth; background: var(--paper); overflow-x: hidden; }
+html { scroll-behavior: smooth; background: var(--paper); overflow-x: clip; }
 body {
   background: var(--paper);
   color: var(--ink-2);
   font-family: var(--sans);
   font-size: 16.5px;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* the ambient field — a canvas draws the receding grid over this;
@@ -548,7 +548,7 @@ html.pin-ready .pin__step[data-active] .eyebrow::before { background: var(--blue
   margin-bottom: .8rem;
   transition: opacity .5s var(--mech), transform .5s var(--mech), border-color .5s;
 }
-html.pin-ready .pin__stage { position: sticky; top: 34vh; height: 16rem; transform-style: preserve-3d; }
+html.pin-ready .pin__stage { position: sticky; top: 30vh; height: 18rem; transform-style: preserve-3d; }
 html.pin-ready .pin__card {
   position: absolute; inset: 0; margin-bottom: 0;
   opacity: 0; transform: translateY(30px) translateZ(-120px) rotateX(10deg);
