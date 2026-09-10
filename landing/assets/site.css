@@ -7,7 +7,7 @@
 
    Bricolage Grotesque carries the headlines; IBM Plex Mono is the
    telemetry; IBM Plex Sans is the body. A cream page tone on tobacco
-   blue on cream; the grid is graph paper; the marks are pencil.
+   the colorhunt set run dark; a blueprint is white on blue.
 
    3D is CSS perspective + one canvas grid, not a WebGL scene, so it
    stays light and maintainable. Every animated element has a correct,
@@ -28,33 +28,32 @@ ul, ol { list-style: none; padding: 0; }
 
 /* ---------- tokens ---------- */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  /* Drafting table: a blueprint pinned to warm drawing paper. The palette
-     is colorhunt 3368a0 / 66a3bf / c8dfdb / f2efe7 — two blues, a pale
-     mint wash, cream stock — with a deep navy-biased ink derived from the
-     blue for the text the source set has no dark for. The receding grid
-     reads as graph paper; the instrument marks read as pencil. */
-  --paper:    #f2efe7;
-  --paper-2:  #e7eae1;   /* raised — cards, panels */
-  --panel:    #e7eae1;   /* alias: component surfaces */
-  --panel-2:  #dde7e2;   /* alias: deeper insets */
-  --mint:     #c8dfdb;   /* inset wash — code, quiet fills */
-  --hair:     #d6d3c6;   /* hairline rules on paper */
-  --edge:     #b7c3bf;   /* stronger borders — mint-grey */
+  /* Blueprint: the colorhunt set 3368a0 / 66a3bf / c8dfdb / f2efe7 run
+     dark — a deep navy ground struck from the blue, the two light tones
+     carrying the text, the brighter blue doing the drawing. A blueprint
+     is white lines on blue, so the graph-paper grid stays. */
+  --paper:    #0e1a28;   /* ground — deep navy from 3368a0 */
+  --paper-2:  #14263a;   /* raised — cards, panels */
+  --panel:    #14263a;   /* alias */
+  --panel-2:  #1b3048;   /* alias — deeper insets */
+  --mint:     #17293c;   /* inset wash — code, quiet fills */
+  --hair:     #223449;   /* hairline rules */
+  --edge:     #354c62;   /* stronger borders */
 
-  --ink:      #15263a;   /* primary text     13:1 on paper */
-  --ink-2:    #37495c;   /* secondary         8:1 */
-  --ink-3:    #4f6170;   /* labels, telemetry ~5:1 */
-  --ink-deep: #0f1c2c;
+  --ink:      #f2efe7;   /* headings + strong text   15:1 on ground */
+  --ink-2:    #c8dfdb;   /* body, lede, secondary    12.6:1 */
+  --ink-3:    #8aa5a2;   /* labels, telemetry        ~6:1 */
+  --ink-deep: #e6efec;
 
-  --blue:     #3368a0;   /* the drawing colour — accent text, 5:1 */
-  --blue-deep:#2b5988;   /* accent on tinted surfaces / buttons, 6.3:1 */
-  --cyan:     #66a3bf;   /* structural only — grid, dots, borders (2.4:1, never text) */
-  --bar:      #15263a;   /* redaction bar — a real censor mark is ink-black */
+  --blue:     #66a3bf;   /* the drawing colour — accent text, 6.3:1 */
+  --blue-deep:#3368a0;   /* fills, borders, the primary button */
+  --cyan:     #7fb4cc;   /* structural lift — grid lines, live dots */
+  --bar:      #0a1421;   /* redaction bar — blacked out over light text */
 
-  --blue-wash: rgba(51, 104, 160, .10);
-  --cyan-wash: rgba(102, 163, 191, .18);
+  --blue-wash: rgba(102, 163, 191, .12);
+  --cyan-wash: rgba(51, 104, 160, .18);
 
   --display: "Bricolage Grotesque", "Archivo", "Helvetica Neue", Arial, sans-serif;
   --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -85,8 +84,8 @@ body {
   position: fixed; inset: 0; z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(120% 80% at 50% -10%, rgba(51,104,160,.07), transparent 60%),
-    radial-gradient(90% 60% at 50% 120%, rgba(102,163,191,.10), transparent 70%),
+    radial-gradient(120% 80% at 50% -10%, rgba(102,163,191,.10), transparent 60%),
+    radial-gradient(90% 60% at 50% 120%, rgba(51,104,160,.14), transparent 70%),
     var(--paper);
 }
 .field canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .6; }
@@ -98,8 +97,8 @@ body::after {
   pointer-events: none;
   opacity: .5;
   background-image:
-    repeating-linear-gradient(0deg, transparent 0 31px, rgba(21,38,58,.035) 31px 32px),
-    repeating-linear-gradient(90deg, transparent 0 31px, rgba(21,38,58,.035) 31px 32px);
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(200,223,219,.045) 31px 32px),
+    repeating-linear-gradient(90deg, transparent 0 31px, rgba(200,223,219,.045) 31px 32px);
 }
 
 main, .site-head, .site-foot { position: relative; z-index: 2; }
@@ -383,7 +382,7 @@ html.fx .stage__floor { animation: floor 6s linear infinite; }
   transform: translateZ(-260px);
   border: 1px solid var(--hair);
   background:
-    linear-gradient(120deg, rgba(21,38,58,.02), transparent 60%),
+    linear-gradient(120deg, rgba(200,223,219,.035), transparent 60%),
     var(--panel);
 }
 .stage__capture::before {
@@ -402,11 +401,11 @@ html.fx .stage__floor { animation: floor 6s linear infinite; }
   transform: translateZ(40px) rotateY(-11deg);
   transition: transform .4s var(--ease);
   border: 1px solid var(--edge);
-  background: linear-gradient(150deg, rgba(21,38,58,.03), transparent 55%), var(--panel);
+  background: linear-gradient(150deg, rgba(200,223,219,.05), transparent 55%), var(--panel);
   box-shadow:
-    0 40px 80px -30px rgba(21,38,58,.16),
+    0 40px 80px -30px rgba(2,7,14,.55),
     0 0 0 1px rgba(202,165,99,.09),
-    inset 0 1px 0 rgba(21,38,58,.03);
+    inset 0 1px 0 rgba(200,223,219,.05);
 }
 .stage:hover .stage__panel { transform: translateZ(52px) rotateY(-7deg); }
 .stage__panel .corner {
@@ -510,7 +509,7 @@ html.fx .marquee ul { animation: slide 32s linear infinite; }
   padding: clamp(1.3rem, 2.5vw, 1.9rem);
   margin: -.5px;
   position: relative;
-  background: linear-gradient(180deg, rgba(21,38,58,.015), transparent);
+  background: linear-gradient(180deg, rgba(200,223,219,.025), transparent);
   transition: background .2s, border-color .2s;
 }
 .panel::before {
@@ -558,7 +557,7 @@ html.pin-ready .pin__card {
 html.pin-ready .pin__card[data-active] {
   opacity: 1; transform: none; pointer-events: auto;
   border-color: var(--edge);
-  box-shadow: 0 30px 60px -25px rgba(21,38,58,.14), 0 0 0 1px var(--blue-wash);
+  box-shadow: 0 30px 60px -25px rgba(2,7,14,.5), 0 0 0 1px var(--blue-wash);
 }
 .pin__card .mock__live { border-top: 0; padding-top: 0; margin-top: 0; }
 
