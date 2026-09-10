@@ -72,7 +72,7 @@
     size();
     addEventListener('resize', size, { passive: true });
 
-    const line = '#212a34';
+    const line = '#37301f';
     const draw = (now) => {
       const t = (now - t0) / 1000;
       ctx.clearRect(0, 0, w, h);
@@ -103,11 +103,11 @@
       // horizon glow
       ctx.globalAlpha = 1;
       const g = ctx.createLinearGradient(0, horizon - 30, 0, horizon + 2);
-      g.addColorStop(0, 'rgba(239,180,92,0)');
-      g.addColorStop(1, 'rgba(239,180,92,.14)');
+      g.addColorStop(0, 'rgba(202,165,99,0)');
+      g.addColorStop(1, 'rgba(202,165,99,.13)');
       ctx.fillStyle = g;
       ctx.fillRect(0, horizon - 30, w, 32);
-      ctx.strokeStyle = 'rgba(239,180,92,.3)';
+      ctx.strokeStyle = 'rgba(202,165,99,.28)';
       ctx.globalAlpha = 1;
       ctx.beginPath(); ctx.moveTo(0, horizon); ctx.lineTo(w, horizon); ctx.stroke();
 

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <!-- a signal: three bars, the middle one carrying -->
-  <rect width="32" height="32" fill="#0a0c0e"/>
-  <rect x="5"  y="8"  width="4.5" height="16" fill="#e9ece7" fill-opacity=".4"/>
-  <rect x="13.75" y="3" width="4.5" height="26" fill="#efb45c"/>
-  <rect x="22.5" y="12" width="4.5" height="8" fill="#e9ece7" fill-opacity=".4"/>
+  <rect width="32" height="32" fill="#16130f"/>
+  <rect x="5"  y="8"  width="4.5" height="16" fill="#e9e0cd" fill-opacity=".38"/>
+  <rect x="13.75" y="3" width="4.5" height="26" fill="#caa563"/>
+  <rect x="22.5" y="12" width="4.5" height="8" fill="#e9e0cd" fill-opacity=".38"/>
 </svg>
